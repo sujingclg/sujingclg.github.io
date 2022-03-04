@@ -1,21 +1,23 @@
 <!doctype html><html lang=en-us dir=ltr>
 <head>
-<meta name=generator content="Hugo 0.93.1">
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="计算机图形学基础（第5版） #  Fundamentals of Computer Graphics (Fifth Edition)
- ">
+<meta name=description content="第4章 光线追踪 #  Ray Tracing
+ 计算机图形学的一个基本任务是渲染三维物体：构造出一个由许多排列在三维空间中的几何物体组成的场景，并且计算出一个从特定视角看到的二维图像。这个过程就好像几个世纪以来，建筑师和工程师通过绘制图纸来将自己的设计传达给他人。
+幸运的是，渲染是将一组对象作为输入，并将一组像素作为输出的过程。不管怎样，渲染涉及到考虑每个对象如何贡献到每个像素，它可以用两种常规方式处理。在object-order渲染中，依次渲染每个对象，而在每个对象的渲染过程中，将找到并更新受其影响的所有像素。在image-order渲染中，依次处理每个像素，为每个像素找到所有影响它的对象并计算像素值。你可以从循环嵌套的角度来考虑它们之间的区别：在image-order渲染中，for each pixel循环语句在外部，而在object-order渲染中，for each object循环语句在外部。
+如果输出是矢量图而非光栅图，渲染无需考虑像素，但在这里我们假定是光栅图。  无论image-order还是object-order，都会生成同样的图像，但是它们适用于计算不同种类的效果并且有显著不同的性能特征。我们将会在完成了这两种方法的讨论后，在第9章揭示这两种渲染方式的各自优势。但是，一般来说，image-order渲染更容易实现，并且在实现某些效果方面更加灵活，同时（但不总是）也需要更多的执行时间生成一个类似的图像。
+在光线跟踪器中，精确计算阴影线和反射线是很容易的，而在object-order框架中是很困难的。  光线追踪是一个用于渲染三维场景image-order算法，我们将首先介绍它，因为我们不需要开发任何用于object-order渲染的数学机制，就可以让光线追踪器工作。">
 <meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="Introduction">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="第4章 光线追踪">
 <meta property="og:description" content>
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://sujingclg.github.io/">
-<title>Introduction | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
+<meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/">
+<title>第4章 光线追踪 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
 <link rel=icon href=/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/flexsearch.min.js></script>
 <script defer src=/en.search.min.ef0839bd527b729a1071c22aac0db6627a254ba5724c326c52932058cf9510bd.js integrity="sha256-7wg5vVJ7cpoQccIqrA22YnolS6VyTDJsUpMgWM+VEL0=" crossorigin=anonymous></script>
-<link rel=alternate type=application/rss+xml href=https://sujingclg.github.io/index.xml title=计算机图形学基础>
+<link rel=alternate type=application/rss+xml href=https://sujingclg.github.io/docs/chapter04/index.xml title=计算机图形学基础>
 </head><body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
 <input type=checkbox class="hidden toggle" id=toc-control>
@@ -54,9 +56,9 @@
 <li>
 <a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
 </li></ul></li><li>
-<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
+<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle checked>
 <label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
-<a href=/docs/chapter04/>第4章 光线追踪</a>
+<a href=/docs/chapter04/ class=active>第4章 光线追踪</a>
 </label>
 <ul>
 <li>
@@ -127,16 +129,20 @@ Blog
 <label for=menu-control>
 <img src=/svg/menu.svg class=book-icon alt=Menu>
 </label>
-<strong>Introduction</strong>
+<strong>第4章 光线追踪</strong>
 <label for=toc-control>
 <img src=/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>
 </div><aside class="hidden clearfix">
-<nav id=TableOfContents></nav></aside></header><article class=markdown><h1 id=计算机图形学基础第5版>
-计算机图形学基础（第5版）
-<a class=anchor href=#%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9b%be%e5%bd%a2%e5%ad%a6%e5%9f%ba%e7%a1%80%e7%ac%ac5%e7%89%88>#</a>
-</h1><p>Fundamentals of Computer Graphics (Fifth Edition)</p><hr>
-<p><img src=/cover.jpg alt=cover.jpg></p></article><footer class=book-footer>
+<nav id=TableOfContents></nav></aside></header><article class=markdown><h1 id=第4章-nbsp-光线追踪>
+第4章   光线追踪
+<a class=anchor href=#%e7%ac%ac4%e7%ab%a0-nbsp-%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa>#</a>
+</h1><p>Ray Tracing</p><hr>
+<p>计算机图形学的一个基本任务是渲染三维物体：构造出一个由许多排列在三维空间中的几何物体组成的场景，并且计算出一个从特定视角看到的二维图像。这个过程就好像几个世纪以来，建筑师和工程师通过绘制图纸来将自己的设计传达给他人。</p><p>幸运的是，渲染是将一组对象作为输入，并将一组像素作为输出的过程。不管怎样，渲染涉及到考虑每个对象如何贡献到每个像素，它可以用两种常规方式处理。在object-order渲染中，依次渲染每个对象，而在每个对象的渲染过程中，将找到并更新受其影响的所有像素。在image-order渲染中，依次处理每个像素，为每个像素找到所有影响它的对象并计算像素值。你可以从循环嵌套的角度来考虑它们之间的区别：在image-order渲染中，<code>for each pixel</code>循环语句在外部，而在object-order渲染中，<code>for each object</code>循环语句在外部。</p><blockquote class="book-hint info">
+如果输出是矢量图而非光栅图，渲染无需考虑像素，但在这里我们假定是光栅图。
+</blockquote><p>无论image-order还是object-order，都会生成同样的图像，但是它们适用于计算不同种类的效果并且有显著不同的性能特征。我们将会在完成了这两种方法的讨论后，在第9章揭示这两种渲染方式的各自优势。但是，一般来说，image-order渲染更容易实现，并且在实现某些效果方面更加灵活，同时（但不总是）也需要更多的执行时间生成一个类似的图像。</p><blockquote class="book-hint info">
+在光线跟踪器中，精确计算阴影线和反射线是很容易的，而在object-order框架中是很困难的。
+</blockquote><p>光线追踪是一个用于渲染三维场景image-order算法，我们将首先介绍它，因为我们不需要开发任何用于object-order渲染的数学机制，就可以让光线追踪器工作。</p></article><footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 </footer><div class=book-comments>

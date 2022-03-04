@@ -1,21 +1,24 @@
 <!doctype html><html lang=en-us dir=ltr>
 <head>
-<meta name=generator content="Hugo 0.93.1">
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="计算机图形学基础（第5版） #  Fundamentals of Computer Graphics (Fifth Edition)
- ">
+<meta name=description content="Mermaid Chart #  MermaidJS is library for generating svg charts and diagrams from text.
+Override Mermaid Initialization Config
+To override the initialization config for Mermaid, create a mermaid.json file in your assets folder!
+ Example #  {{< mermaid [class=&#34;text-center&#34;]>}} stateDiagram-v2  State1: The state with a note  note right of State1  Important information! You can write  notes.  end note  State1 --> State2  note left of State2 : This is the note to the left.">
 <meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="Introduction">
-<meta property="og:description" content>
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://sujingclg.github.io/">
-<title>Introduction | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
+<meta name=color-scheme content="light dark"><meta property="og:title" content>
+<meta property="og:description" content="Mermaid Chart #  MermaidJS is library for generating svg charts and diagrams from text.
+Override Mermaid Initialization Config
+To override the initialization config for Mermaid, create a mermaid.json file in your assets folder!
+ Example #  {{< mermaid [class=&#34;text-center&#34;]>}} stateDiagram-v2  State1: The state with a note  note right of State1  Important information! You can write  notes.  end note  State1 --> State2  note left of State2 : This is the note to the left.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sujingclg.github.io/docs/shortcodes/mermaid/"><meta property="article:section" content="docs">
+<title>Mermaid | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
 <link rel=icon href=/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/flexsearch.min.js></script>
 <script defer src=/en.search.min.ef0839bd527b729a1071c22aac0db6627a254ba5724c326c52932058cf9510bd.js integrity="sha256-7wg5vVJ7cpoQccIqrA22YnolS6VyTDJsUpMgWM+VEL0=" crossorigin=anonymous></script>
-<link rel=alternate type=application/rss+xml href=https://sujingclg.github.io/index.xml title=计算机图形学基础>
 </head><body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
 <input type=checkbox class="hidden toggle" id=toc-control>
@@ -102,7 +105,7 @@
 </li><li>
 <a href=/docs/shortcodes/katex/>Katex</a>
 </li><li>
-<a href=/docs/shortcodes/mermaid/>Mermaid</a>
+<a href=/docs/shortcodes/mermaid/ class=active>Mermaid</a>
 </li><li>
 <input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
 <label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
@@ -127,20 +130,52 @@ Blog
 <label for=menu-control>
 <img src=/svg/menu.svg class=book-icon alt=Menu>
 </label>
-<strong>Introduction</strong>
+<strong>Mermaid</strong>
 <label for=toc-control>
 <img src=/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>
 </div><aside class="hidden clearfix">
-<nav id=TableOfContents></nav></aside></header><article class=markdown><h1 id=计算机图形学基础第5版>
-计算机图形学基础（第5版）
-<a class=anchor href=#%e8%ae%a1%e7%ae%97%e6%9c%ba%e5%9b%be%e5%bd%a2%e5%ad%a6%e5%9f%ba%e7%a1%80%e7%ac%ac5%e7%89%88>#</a>
-</h1><p>Fundamentals of Computer Graphics (Fifth Edition)</p><hr>
-<p><img src=/cover.jpg alt=cover.jpg></p></article><footer class=book-footer>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#example>Example</a></li></ul></nav></aside></header><article class=markdown><h1 id=mermaid-chart>
+Mermaid Chart
+<a class=anchor href=#mermaid-chart>#</a>
+</h1><p><a href=https://mermaid-js.github.io/>MermaidJS</a> is library for generating svg charts and diagrams from text.</p><blockquote class="book-hint info">
+<p><strong>Override Mermaid Initialization Config</strong></p><p>To override the <a href=https://mermaid-js.github.io/mermaid/#/Setup>initialization config</a> for Mermaid,
+create a <code>mermaid.json</code> file in your <code>assets</code> folder!</p></blockquote><h2 id=example>
+Example
+<a class=anchor href=#example>#</a>
+</h2><div class="book-columns flex flex-wrap">
+<div class="flex-even markdown-inner">
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-tpl data-lang=tpl><span style=display:flex><span><span style=color:#75715e>{{</span><span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>mermaid</span> <span style=color:#f92672>[</span><span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-center&#34;</span><span style=color:#f92672>]&gt;</span><span style=color:#75715e>}}</span>
+</span></span><span style=display:flex><span>stateDiagram-v2
+</span></span><span style=display:flex><span>    State1: The state with a note
+</span></span><span style=display:flex><span>    note right of State1
+</span></span><span style=display:flex><span>        Important information! You can write
+</span></span><span style=display:flex><span>        notes.
+</span></span><span style=display:flex><span>    end note
+</span></span><span style=display:flex><span>    State1 --&gt; State2
+</span></span><span style=display:flex><span>    note left of State2 : This is the note to the left.
+</span></span><span style=display:flex><span><span style=color:#75715e>{{</span><span style=color:#f92672>&lt;</span> <span style=color:#f92672>/</span><span style=color:#a6e22e>mermaid</span> <span style=color:#f92672>&gt;</span><span style=color:#75715e>}}</span>
+</span></span></code></pre></div></div><div class="flex-even markdown-inner">
+<script src=/mermaid.min.js></script>
+<script>mermaid.initialize({flowchart:{useMaxWidth:!0},theme:"default"})</script>
+<p class=mermaid>
+stateDiagram-v2
+State1: The state with a note
+note right of State1
+Important information! You can write
+notes.
+end note
+State1 --> State2
+note left of State2 : This is the note to the left.
+</div></div></article><footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 </footer><div class=book-comments>
 </div><label for=menu-control class="hidden book-menu-overlay"></label>
 </div><aside class=book-toc>
 <div class=book-toc-content>
-<nav id=TableOfContents></nav></div></aside></main></body></html>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#example>Example</a></li></ul></nav></div></aside></main></body></html>

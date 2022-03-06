@@ -1,0 +1,306 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="4.4 光线-对象求交 #  Ray-Object Intersection
+ 现在我们已经生成了一条光线 e + td ，接下来我们需要找到 t > 0 时与任意物体的第一个交点。在实践中，它常用于解决一个稍微更一般的问题：求出光线和曲面上的点t在区间[t0, t1]上的第一个交点。基本的光线求交的两个边界条件是 t0 = 0时 和 t1 = +∞ 时。我们会在球体和三角形的例子中解决此问题，并在下个小节中讨论多个物体的情况。
+ 4.4.1 光线-球体求交 #  Ray-Sphere Intersection
+ 已知射线 p(t) = e + td 和隐式曲面 f(p) = 0 (见2.7.3节)，我们想知道它们在哪里相交。交点必须同时满足射线方程和隐式曲面方程，所以我们要求的t值就是解下列方程的值。
+  \[f({\rm \pmb{p}}(t)) = 0 \quad 或 \quad f({\rm e} + t{\rm d}) = 0\]  圆心 c = (xc, yc, zc)，半径 R 的球面可以用如下隐式方程表示
+ \[(x - x_c)^2 + (y - y_c)^2 + (z - z_c)^2 -R^2 = 0\]  我们也可以把上面的方程写成如下的向量形式：">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="4.4 光线对象相交">
+<meta property="og:description" content="4.4 光线-对象求交 #  Ray-Object Intersection
+ 现在我们已经生成了一条光线 e + td ，接下来我们需要找到 t > 0 时与任意物体的第一个交点。在实践中，它常用于解决一个稍微更一般的问题：求出光线和曲面上的点t在区间[t0, t1]上的第一个交点。基本的光线求交的两个边界条件是 t0 = 0时 和 t1 = +∞ 时。我们会在球体和三角形的例子中解决此问题，并在下个小节中讨论多个物体的情况。
+ 4.4.1 光线-球体求交 #  Ray-Sphere Intersection
+ 已知射线 p(t) = e + td 和隐式曲面 f(p) = 0 (见2.7.3节)，我们想知道它们在哪里相交。交点必须同时满足射线方程和隐式曲面方程，所以我们要求的t值就是解下列方程的值。
+  \[f({\rm \pmb{p}}(t)) = 0 \quad 或 \quad f({\rm e} + t{\rm d}) = 0\]  圆心 c = (xc, yc, zc)，半径 R 的球面可以用如下隐式方程表示
+ \[(x - x_c)^2 + (y - y_c)^2 + (z - z_c)^2 -R^2 = 0\]  我们也可以把上面的方程写成如下的向量形式：">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/4-4/"><meta property="article:section" content="docs">
+<title>4.4 光线对象相交 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
+<link rel=icon href=/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/flexsearch.min.js></script>
+<script defer src=/en.search.min.ddcd5b07a5d9a059a4d4cedecd36d848e00c7f9eee7204dab211cb48e13bd6c1.js integrity="sha256-3c1bB6XZoFmk1M7ezTbYSOAMf57ucgTashHLSOE71sE=" crossorigin=anonymous></script>
+</head><body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/><span>计算机图形学基础</span>
+</a>
+</h2><div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul>
+<li>
+<input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
+<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between">
+<a href=/docs/chapter01/>第1章 引言</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter01/1-1/>1.1 图形学领域</a>
+</li><li>
+<a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a>
+</li></ul></li><li>
+<input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
+<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between">
+<a href=/docs/chapter02/>第2章 基本数学知识</a>
+</label>
+<ul>
+</ul></li><li>
+<input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
+<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between">
+<a href=/docs/chapter03/>第3章 光栅化图像</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
+</li></ul></li><li>
+<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle checked>
+<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
+<a href=/docs/chapter04/>第4章 光线追踪</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a>
+</li><li>
+<a href=/docs/chapter04/4-2/>4.2 透视投影</a>
+</li><li>
+<a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
+</li><li>
+<a href=/docs/chapter04/4-4/ class=active>4.4 光线对象相交</a>
+</li></ul></li><li class=book-section-flat>
+<a href=/docs/example/>Example Site</a>
+<ul>
+<li>
+<a href=/docs/example/table-of-contents/>Table of Contents</a>
+<ul>
+<li>
+<a href=/docs/example/table-of-contents/with-toc/>With ToC</a>
+</li><li>
+<a href=/docs/example/table-of-contents/without-toc/>Without ToC</a>
+</li></ul></li><li>
+<input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
+<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between">
+<a role=button>Collapsed</a>
+</label>
+<ul>
+<li>
+<a href=/docs/example/collapsed/3rd-level/>3rd Level</a>
+<ul>
+<li>
+<a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
+</li></ul></li></ul></li></ul></li><li class=book-section-flat>
+<span>Shortcodes</span>
+<ul>
+<li>
+<a href=/docs/shortcodes/buttons/>Buttons</a>
+</li><li>
+<a href=/docs/shortcodes/columns/>Columns</a>
+</li><li>
+<a href=/docs/shortcodes/details/>Details</a>
+</li><li>
+<a href=/docs/shortcodes/expand/>Expand</a>
+</li><li>
+<a href=/docs/shortcodes/hints/>Hints</a>
+</li><li>
+<a href=/docs/shortcodes/katex/>Katex</a>
+</li><li>
+<a href=/docs/shortcodes/mermaid/>Mermaid</a>
+</li><li>
+<input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
+<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
+<a href=/docs/shortcodes/section/>Section</a>
+</label>
+<ul>
+<li>
+<a href=/docs/shortcodes/section/first-page/>First Page</a>
+</li><li>
+<a href=/docs/shortcodes/section/second-page/>Second Page</a>
+</li></ul></li><li>
+<a href=/docs/shortcodes/tabs/>Tabs</a>
+</li></ul></li></ul><ul>
+<li>
+<a href=/posts/>
+Blog
+</a>
+</li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div></aside><div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>4.4 光线对象相交</strong>
+<label for=toc-control>
+<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div><aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#441-光线-球体求交>4.4.1 光线-球体求交</a></li><li><a href=#442-光线-三角形求交>4.4.2 光线-三角形求交</a></li><li><a href=#443-软件中如何实现光线求交>4.4.3 软件中如何实现光线求交</a></li><li><a href=#444-与一组物体相交>4.4.4 与一组物体相交</a></li></ul></nav></aside></header><article class=markdown><h1 id=44-光线-对象求交>
+4.4 光线-对象求交
+<a class=anchor href=#44-%e5%85%89%e7%ba%bf-%e5%af%b9%e8%b1%a1%e6%b1%82%e4%ba%a4>#</a>
+</h1><p>Ray-Object Intersection</p><hr>
+<p>现在我们已经生成了一条光线 e + td ，接下来我们需要找到 t > 0 时与任意物体的第一个交点。在实践中，它常用于解决一个稍微更一般的问题：求出光线和曲面上的点t在区间[t0, t1]上的第一个交点。基本的光线求交的两个边界条件是 t0 = 0时 和 t1 = +∞ 时。我们会在球体和三角形的例子中解决此问题，并在下个小节中讨论多个物体的情况。</p><br>
+<h2 id=441-光线-球体求交>
+4.4.1 光线-球体求交
+<a class=anchor href=#441-%e5%85%89%e7%ba%bf-%e7%90%83%e4%bd%93%e6%b1%82%e4%ba%a4>#</a>
+</h2><p>Ray-Sphere Intersection</p><hr>
+<p>已知射线 p(t) = e + td 和隐式曲面 f(p) = 0 (见2.7.3节)，我们想知道它们在哪里相交。交点必须同时满足射线方程和隐式曲面方程，所以我们要求的t值就是解下列方程的值。</p><link rel=stylesheet href=/katex/katex.min.css>
+<script defer src=/katex/katex.min.js></script>
+<script defer src=/katex/auto-render.min.js onload=renderMathInElement(document.body)></script><span>
+\[f({\rm \pmb{p}}(t)) = 0 \quad 或 \quad f({\rm e} + t{\rm d}) = 0\]
+</span>
+<p>圆心 c = (xc, yc, zc)，半径 R 的球面可以用如下隐式方程表示</p><span>
+\[(x - x_c)^2 + (y - y_c)^2 + (z - z_c)^2 -R^2 = 0\]
+</span>
+<p>我们也可以把上面的方程写成如下的向量形式：</p><span>
+\[({\rm\pmb{p}} - {\rm\pmb{c}}) \cdot ({\rm\pmb{p}} - {\rm\pmb{c}}) - R^2 = 0\]
+</span>
+<p>任一满足这个方程的点p一定在球面上。如果我们把光线 p(t) = e + td 上的点代入这个方程，我们就得到了一个关于t的方程，这个方程满足 t 的值产生的点在球面上。</p><span>
+\[({\rm\pmb{e}} + t{\rm\pmb{d}} - {\rm\pmb{c}}) \cdot ({\rm\pmb{e}} + t{\rm\pmb{d}} - {\rm\pmb{c}}) - R^2 = 0\]
+</span>
+<p>整理后得到</p><span>
+\[({\rm\pmb{d}}\cdot{\rm\pmb{d}})t^2 + 2{\rm\pmb{d}}\cdot({\rm\pmb{e}}-{\rm\pmb{c}})t + ({\rm\pmb{e}}-{\rm\pmb{c}})\cdot({\rm\pmb{e}}-{\rm\pmb{c}}) - R^2 = 0\]
+</span>
+<p>上式中除了 t 之外的其余参数都是已知的，因此这是一个经典的关于 t 的二次方程，这说明它有类似下式的形式</p><span>
+\[At^2 + Bt + C = 0\]
+</span>
+<p>这个方程的解法已在2.2节讨论过了。二次方程求根公式中根号下的项（B<sup>2</sup> - 4AC）称为判别式，它告诉我们有多少个实根。如果判别式是负的，则它的平方根是虚数，光线和球不相交。如果判别式为正，则方程有两个根，一个是射线进入球体的地方，另一个是射线离开球体的地方。如果判别式为零，光线就会擦过球体，与它刚好在切点接触。代入球面的实际项然后消去乘数2，我们得到</p><span>
+\[t = \frac{-{\rm\pmb{d}}\cdot({\rm\pmb{e}}-{\rm\pmb{c}})^2\pm\sqrt{({\rm\pmb{d}}\cdot({\rm\pmb{e}}-{\rm\pmb{c}})^2)-({\rm\pmb{d}}\cdot{\rm\pmb{d}})(({\rm\pmb{e}}-{\rm\pmb{c}})\cdot({\rm\pmb{e}}-{\rm\pmb{c}})-R^2)}}{({\rm\pmb{d}}\cdot{\rm\pmb{d}})}\]
+</span>
+<p>在实际实现中，在计算其他项之前，应该首先检查判别式的值。为了正确地找到区间 [t0, t1] 内最近的交点，需要区分三种情况：如果两个解中较小的在区间内，则为第一次命中；否则，如果较大的解在区间内，它就是第一次命中；否则，就没有命中。if the smaller of the two solutions is in the interval, it is the first hit; otherwise, if the larger solution is in the interval, it is the first hit; otherwise, there is no hit.</p><p>正如我们在2.7.4节讨论的那样，点 p 的法向量可由梯度 n = 2(p − c) 得出。单位法向量为 (p − c)/R 。</p><br>
+<h2 id=442-光线-三角形求交>
+4.4.2 光线-三角形求交
+<a class=anchor href=#442-%e5%85%89%e7%ba%bf-%e4%b8%89%e8%a7%92%e5%bd%a2%e6%b1%82%e4%ba%a4>#</a>
+</h2><p>Ray-Triangle Intersection</p><hr>
+<p>有多种算法用于计算光线-三角形相交。我们将在包含三角形的参数化平面上使用重心坐标(barycentric coordinates)的形式，因为这种形式表示的三角形除了三角形顶点外的其他属性都不需要长期存储（Snyder & Barr, 1987）。</p><p>为了在光线和三角形之间求交，我们建立了一套笛卡尔坐标都匹配的方程组：</p><span>
+\[\left.\begin{aligned}x_e + tx_d = f(u,v)\\y_e + ty_d = g(u,v)\\z_e + tz_d = h(u,v)\end{aligned}
+\right\} \quad \text{or,}
+\quad {\rm\pmb{e}} + t{\rm\pmb{d}} = {\rm\pmb{f}}(u,v)\]
+</span>
+<p>这里我们有三个方程和三个未知量（t, u 和 v)，在曲面是参数平面、参数方程是线性的的情况下，根据2.9.2节的知识，可以写成向量形式。假设三角形的顶点为a、b、c，则下式成立时有交点</p><span>
+\[{\rm\pmb{e}} + t{\rm\pmb{d}} = {\rm\pmb{a}} + \beta({\rm\pmb{b}} - {\rm\pmb{a}}) + \gamma({\rm\pmb{c}} - {\rm\pmb{a}})\tag{4.2}\]
+</span>
+<p>其中，t，β 和 γ 是未知量。解这个方程可以得到 t（位于射线上的交点处），以及(β, γ)（位于三角形上的交点处）。e + td 上的交点p如图4.10所示。再次，根据2.9.2节，我们知道交点在三角形内部当且仅当 β > 0，γ > 0，且 β + γ &lt; 1。否则，射线将与三角形所在平面的交点将在三角形外部，因此不会与三角形相交。如果方程组无解，要么三角形是简并的，要么射线与三角形所在平面平行。</p><center style="font-size: 14px">图4.11 射线将与三角形所在平面的交点</center>
+<p>为了解出式(4.2)中的 t，β 和 γ，我们将其从向量形式展开为三坐标形式：</p><span>
+\[x_e + tx_d = x_a + \beta(x_b - x_a) + \gamma(x_c - x_a),
+\\
+y_e + ty_d = y_a + \beta(y_b - x_a) + \gamma(y_c - y_a),
+\\
+z_e + tz_d = z_a + \beta(z_b - z_a) + \gamma(z_c - z_a).\]
+</span>
+<p>上式可以被写成标准的线性代数矩阵：</p><span>
+\[\begin{bmatrix}
+x_a-x_b & x_a-x_c & x_d\\
+y_a-y_b & y_a-y_c & y_d\\
+z_a-z_b & z_a-z_c & z_d
+\end{bmatrix}
+\begin{bmatrix}
+\beta\\\gamma\\t
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_a-x_e\\y_a-y_e\\z_a-z_e
+\end{bmatrix}\]
+</span>
+<p>The fastest classic method to solve this 3 × 3 linear system is Cramer’s rule. This gives us the solutions</p><p>最简洁的解3 × 3 线性方程组的方法是克莱默法则。他给出了如下解法</p><span>
+\[\beta = \frac{\begin{bmatrix}
+x_a-x_e & x_a-x_c & x_d\\
+y_a-y_e & y_a-y_c & y_d\\
+z_a-z_e & z_a-z_c & z_d
+\end{bmatrix}}{|{\rm \pmb{A}}|},
+\\
+\gamma = \frac{\begin{bmatrix}
+x_a-x_b & x_a-x_e & x_d\\
+y_a-y_b & y_a-y_e & y_d\\
+z_a-z_b & z_a-z_e & z_d
+\end{bmatrix}}{|{\rm \pmb{A}}|},
+\\
+t = \frac{\begin{bmatrix}
+x_a-x_b & x_a-x_c & x_e\\
+y_a-y_b & y_a-y_c & y_e\\
+z_a-z_b & z_a-z_c & z_e
+\end{bmatrix}}{|{\rm \pmb{A}}|}.\]
+</span>
+<p>其中矩阵A为</p><span>
+\[A = \begin{bmatrix}
+x_a-x_b & x_a-x_c & x_d\\
+y_a-y_b & y_a-y_c & y_d\\
+z_a-z_b & z_a-z_c & z_d
+\end{bmatrix}\]
+</span>
+<p>其中，|A|为A的行列式。这个3 × 3的行列式有共同的子项，可以在计算中利用此特性加速。看看有假变量的线性矩阵</p><span>
+\[\begin{bmatrix}
+a&d&g\\b&e&h\\c&f&i
+\end{bmatrix}
+\begin{bmatrix}
+\beta\\\gamma\\t
+\end{bmatrix} = \begin{bmatrix}
+j\\k\\l
+\end{bmatrix},\]
+</span>
+<p>克莱默法则告诉我们
+<span>
+\[\beta = \frac{j(ei-hf)+k(gf-di)+l(dh-eg)}{M},\\
+\gamma = \frac{i(ak-jb)+h(jc-al)+g(bl-kc)}{M},\\
+t = \frac{f(ak-jb)+e(jc-al)+d(bl-kc)}{M},\]
+</span>
+</p><p>其中</p><span>
+\[M = a(ei-hf)+b(gf-di)+c(dh-eg).\]
+</span>
+<p>我们可以通过重复使用像 &ldquo;ei-减去-hf " 这样的数字来减少运算的次数。</p><p>求解光线-三角形交点的线性方程算法可以有一些提前终止的条件。因此，函数看起来应该是这样的：</p><pre tabindex=0><code>boolean raytri(Ray r, vector3 a, vector3 b, vector3 c, interval[t0,t1])
+compute t
+if (t &lt; t0) or (t &gt; t1) then
+    return false
+compute γ
+if (γ &lt; 0) or (γ &gt; 1) then
+    return false
+compute β
+if (β &lt; 0) or (β &gt; 1−γ) then
+    return false
+return true
+</code></pre><br>
+<h2 id=443-软件中如何实现光线求交>
+4.4.3 软件中如何实现光线求交
+<a class=anchor href=#443-%e8%bd%af%e4%bb%b6%e4%b8%ad%e5%a6%82%e4%bd%95%e5%ae%9e%e7%8e%b0%e5%85%89%e7%ba%bf%e6%b1%82%e4%ba%a4>#</a>
+</h2><p>Ray intersection in software</p><hr>
+<p>在光线追踪程序中，使用面向对象的设计是一个好主意，可以设计基类 Surface 和 其派生类 Triangle，Sphere等。任何可以和光线求交的物体都必须继承自Surface类，包括面组或效率结构（见12.3节）。然后，光线追踪程序在整个模型中的每个Surface做一个引用，并且可以透明地添加新的对象和效率结构。</p><p>Surface类的关键接口是一条射线的相交方法（Kirk & Arvo, 1988）。</p><pre tabindex=0><code>class Surface
+    HitRecord hit(Ray r, real t0, real t1)
+</code></pre><p>这里，(t0 , t1) 是光线上的一个开区间，这个区间中的光线一旦碰撞到物体就将返回。而<code>HitRecord</code>是一个包含了所有需要的关于曲面相交数据的类。</p><pre tabindex=0><code>class HitRecord
+    Surface s | surface that was hit
+    real t | coordinate of hit point along the ray
+    Vec3 n | surface normal at the hit point
+    ...
+</code></pre><p>被光线碰到的表面、t 值和表面法线必须是已知的，但也可以存储一些其他数据，如纹理坐标或切向量。根据编程语言的不同，碰撞记录可能不是直接从函数返回，而是通过传入引用到函数并在其中修改。未碰撞的情况可以用 t = ∞ 的 HitRecord 对象来表示。</p><br>
+<h2 id=444-与一组物体相交>
+4.4.4 与一组物体相交
+<a class=anchor href=#444-%e4%b8%8e%e4%b8%80%e7%bb%84%e7%89%a9%e4%bd%93%e7%9b%b8%e4%ba%a4>#</a>
+</h2><p>Intersecting a Group of Objects</p><hr>
+<p>当然，大多数有趣的场景都包含不止一个物体，当光线与场景相交时，我们必须沿着光线找到离相机最近的交点。实现这一点的一个简单方法是将一组对象看作是另一种类型的对象。要使一条光线与一组物体相交，只需使光线与这个组内的物体相交，然后返回 t 最小的交点。下面的代码演示了区间 t[t0, t1] 中的碰撞测试：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-vb data-lang=vb><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Group</span>, subclass <span style=color:#66d9ef>of</span> Surface
+</span></span><span style=display:flex><span>    list<span style=color:#f92672>-</span><span style=color:#66d9ef>of</span><span style=color:#f92672>-</span>Surface surfaces <span style=color:#960050;background-color:#1e0010>|</span> list <span style=color:#66d9ef>of</span> all surfaces <span style=color:#f92672>in</span> the group 
+</span></span><span style=display:flex><span>    HitRecord hit(Ray ray, real t0, real t1)
+</span></span><span style=display:flex><span>        HitRecord closest<span style=color:#f92672>-</span>hit(<span style=color:#960050;background-color:#1e0010>∞</span>) <span style=color:#960050;background-color:#1e0010>|</span> initialize <span style=color:#66d9ef>to</span> indicate miss
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> surf <span style=color:#f92672>in</span> surfaces <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>            rec <span style=color:#f92672>=</span> surf.hit(ray, t0, t1)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> rec.t <span style=color:#f92672>&lt;</span> <span style=color:#960050;background-color:#1e0010>∞</span> <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>                closest<span style=color:#f92672>-</span>hit <span style=color:#f92672>=</span> rec
+</span></span><span style=display:flex><span>                t1 <span style=color:#f92672>=</span> t
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> closest<span style=color:#f92672>-</span>hit
+</span></span></code></pre></div><p>注意，这段代码缩小了求交间隔 [t0,t1]，以便调用 surf.hit 时只会检测到比目前看到的最近的表面更近的表面的碰撞。</p><p>一旦光线-场景交叉起作用，我们就可以渲染出图4.11所示的图像，但是更好的结果依赖于包含更多的视觉线索，关于这些我们将在后面论述。</p><center style="font-size: 14px">图4.11 一个简单的场景中只有射线生成和曲面相交被渲染，但没有着色；每个像素只根据他们碰撞到的物体被设置成了固定的颜色。</center>
+</article><footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+</footer><div class=book-comments>
+</div><label for=menu-control class="hidden book-menu-overlay"></label>
+</div><aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#441-光线-球体求交>4.4.1 光线-球体求交</a></li><li><a href=#442-光线-三角形求交>4.4.2 光线-三角形求交</a></li><li><a href=#443-软件中如何实现光线求交>4.4.3 软件中如何实现光线求交</a></li><li><a href=#444-与一组物体相交>4.4.4 与一组物体相交</a></li></ul></nav></div></aside></main></body></html>

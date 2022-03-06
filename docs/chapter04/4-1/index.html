@@ -3,24 +3,24 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=description content="4.1 基础光线追踪算法 #  The Basic Ray-Tracing Algorithm
- 光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找被这个像素在图像上看到的物体。每个像素从不同方向上“观察”，任何被像素看到的物体必须与视线相交。视线是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。
+ 光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找这个像素在图像上看到的物体。每个像素向不同方向“观察”，任何被像素看到的物体必须与视线相交。视线(viewing ray)是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。
 图4.1 光线被“追踪”到场景中，并且第一个碰撞到的物体就是通过像素看到的物体。在这个例子中，T2三角形被返回 因此，一个基本的光线追踪器包含3个部分
  产生射线：基于摄像几何学计算每个像素的视线的源和目标； 射线相交：查找与视线相交的最近的物体； 着色：根据相交的结果计算像素的颜色。  基本的光线追踪程序的结构是：
-for each pixel do compute viewing ray find first object hit by ray and its surface normal n set pixel color to value computed from hit point, lights, and n 本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际的可用系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中体现出来。">
+for each pixel do compute viewing ray find first object hit by ray and its surface normal n set pixel color to value computed from hit point, lights, and n 本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际可用的系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中展现。">
 <meta name=theme-color content="#FFFFFF">
 <meta name=color-scheme content="light dark"><meta property="og:title" content="4.1 基础光线追踪算法">
 <meta property="og:description" content="4.1 基础光线追踪算法 #  The Basic Ray-Tracing Algorithm
- 光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找被这个像素在图像上看到的物体。每个像素从不同方向上“观察”，任何被像素看到的物体必须与视线相交。视线是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。
+ 光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找这个像素在图像上看到的物体。每个像素向不同方向“观察”，任何被像素看到的物体必须与视线相交。视线(viewing ray)是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。
 图4.1 光线被“追踪”到场景中，并且第一个碰撞到的物体就是通过像素看到的物体。在这个例子中，T2三角形被返回 因此，一个基本的光线追踪器包含3个部分
  产生射线：基于摄像几何学计算每个像素的视线的源和目标； 射线相交：查找与视线相交的最近的物体； 着色：根据相交的结果计算像素的颜色。  基本的光线追踪程序的结构是：
-for each pixel do compute viewing ray find first object hit by ray and its surface normal n set pixel color to value computed from hit point, lights, and n 本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际的可用系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中体现出来。">
+for each pixel do compute viewing ray find first object hit by ray and its surface normal n set pixel color to value computed from hit point, lights, and n 本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际可用的系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中展现。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/4-1/"><meta property="article:section" content="docs">
 <title>4.1 基础光线追踪算法 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
 <link rel=icon href=/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.ef0839bd527b729a1071c22aac0db6627a254ba5724c326c52932058cf9510bd.js integrity="sha256-7wg5vVJ7cpoQccIqrA22YnolS6VyTDJsUpMgWM+VEL0=" crossorigin=anonymous></script>
+<script defer src=/en.search.min.ddcd5b07a5d9a059a4d4cedecd36d848e00c7f9eee7204dab211cb48e13bd6c1.js integrity="sha256-3c1bB6XZoFmk1M7ezTbYSOAMf57ucgTashHLSOE71sE=" crossorigin=anonymous></script>
 </head><body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
 <input type=checkbox class="hidden toggle" id=toc-control>
@@ -70,6 +70,8 @@ for each pixel do compute viewing ray find first object hit by ray and its surfa
 <a href=/docs/chapter04/4-2/>4.2 透视投影</a>
 </li><li>
 <a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
+</li><li>
+<a href=/docs/chapter04/4-4/>4.4 光线对象相交</a>
 </li></ul></li><li class=book-section-flat>
 <a href=/docs/example/>Example Site</a>
 <ul>
@@ -141,13 +143,13 @@ Blog
 4.1 基础光线追踪算法
 <a class=anchor href=#41-%e5%9f%ba%e7%a1%80%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%ae%97%e6%b3%95>#</a>
 </h1><p>The Basic Ray-Tracing Algorithm</p><hr>
-<p>光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找被这个像素在图像上看到的物体。每个像素从不同方向上“观察”，任何被像素看到的物体必须与视线相交。视线是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。</p><p><img src=https://ae01.alicdn.com/kf/H5e9664cc589a43b1b1752b49cec41d98r.jpg alt=image.png title=发生地方></p><center style="font-size: 14px">图4.1 光线被“追踪”到场景中，并且第一个碰撞到的物体就是通过像素看到的物体。在这个例子中，T2三角形被返回</center>
+<p>光线追踪器通过在某个时间计算一个像素工作，对每个像素，基本的任务是查找这个像素在图像上看到的物体。每个像素向不同方向“观察”，任何被像素看到的物体必须与视线相交。视线(viewing ray)是指一束从视口发射的，沿着正在观察的相素的观察方向的射线。我们尤其要关注的物体是与视线相交的，离摄像机最近的物体，因为他阻挡了视线后方的所有物体。一旦发现了这个物体，着色程序将根据交点，表面法线，以及其他信息（依赖于期望的渲染类型）计算这个像素的颜色值。图4.1展示了这个过程，光线与两个三角形相交，但只有第一个三角形发生碰撞，因此只有它被着色。</p><p><img src=https://ae01.alicdn.com/kf/H5e9664cc589a43b1b1752b49cec41d98r.jpg alt=image.png title=发生地方></p><center style="font-size: 14px">图4.1 光线被“追踪”到场景中，并且第一个碰撞到的物体就是通过像素看到的物体。在这个例子中，T2三角形被返回</center>
 <p>因此，一个基本的光线追踪器包含3个部分</p><ol>
 <li>产生射线：基于摄像几何学计算每个像素的视线的源和目标；</li><li>射线相交：查找与视线相交的最近的物体；</li><li>着色：根据相交的结果计算像素的颜色。</li></ol><p>基本的光线追踪程序的结构是：</p><pre tabindex=0><code>for each pixel do
     compute viewing ray
     find first object hit by ray and its surface normal n
     set pixel color to value computed from hit point, lights, and n
-</code></pre><p>本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际的可用系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中体现出来。</p></article><footer class=book-footer>
+</code></pre><p>本章只讲解光线产生、光线相交和着色的基本方法，这已经足够阐述一个简单的光线追踪器。第12章将要介绍的更加有效率的光线相交技术可以用在更为实际可用的系统，同时，光线追踪器的真正潜力将在第14章中更高级的渲染技术中展现。</p></article><footer class=book-footer>
 <div class="flex flex-wrap justify-between">
 </div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 </footer><div class=book-comments>

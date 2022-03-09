@@ -15,7 +15,7 @@ for each pixel do compute viewing ray find first object hit by ray and its surfa
 注意，p(0) = e，p(1) = s，更一般的，如果0 &amp;lt; t~1~ &amp;lt; t~2~，那么p(t~1~)将比p(t~2~)距离眼睛更近。同样地，如果t &amp;lt; 0，那么p(t)将在眼睛的“后方”。这些事实在我们查找视线范围内的（不在眼睛后方）、被光线照射到的、离观察者最近的物体时会很有用。
 注意：我们对变量 t 进行了重载，它是射线的参数，也是图像顶部边缘的v坐标(v-coordinate)。 光线在代码中总是使用某种存储了位置和方向的结构体或对象来表示。例如，在一个object-oriented程序中我们可能写出如下程序：
 class Ray Vec3 o | ray origin Vec3 d | ray direction Vec3 evaluate(real t) return o + td 我们假定Vec3类表示了一个三维向量，并且支持常规的算术运算。
-为了计算一个视线(viewing ray)，我们需要知道 e (已经给出) 和 s 。求解 s 似乎很复杂，但如果我们从正确的坐标系下看此问题，就会发现他实际上是显而易见的。</description></item><item><title>4.4 光线对象相交</title><link>https://sujingclg.github.io/docs/chapter04/4-4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sujingclg.github.io/docs/chapter04/4-4/</guid><description>4.4 光线-对象求交 # Ray-Object Intersection
+为了计算一个视线(viewing ray)，我们需要知道 e (已经给出) 和 s 。求解 s 似乎很复杂，但如果我们从正确的坐标系下看此问题，就会发现他实际上是显而易见的。</description></item><item><title>4.4 光线对象求交</title><link>https://sujingclg.github.io/docs/chapter04/4-4/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sujingclg.github.io/docs/chapter04/4-4/</guid><description>4.4 光线-对象求交 # Ray-Object Intersection
 现在我们已经生成了一条光线 e + td ，接下来我们需要找到 t &amp;gt; 0 时与任意物体的第一个交点。在实践中，它常用于解决一个稍微更一般的问题：求出光线和曲面上的点t在区间[t0, t1]上的第一个交点。基本的光线求交的两个边界条件是 t0 = 0时 和 t1 = +∞ 时。我们会在球体和三角形的例子中解决此问题，并在下个小节中讨论多个物体的情况。
 4.4.1 光线-球体求交 # Ray-Sphere Intersection
 已知射线 p(t) = e + td 和隐式曲面 f(p) = 0 (见2.7.3节)，我们想知道它们在哪里相交。交点必须同时满足射线方程和隐式曲面方程，所以我们要求的t值就是解下列方程的值。

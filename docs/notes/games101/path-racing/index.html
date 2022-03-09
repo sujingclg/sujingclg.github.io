@@ -1,0 +1,282 @@
+<!doctype html><html lang=en-us dir=ltr>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="路径追踪 #  Path Tracing
+  辐射度量学 #  Basic radiometry
+ 上述提到的方法均属于 Whitted-Style 光线追踪，由于此方法的光照强度等物理量没有被精确定义，导致最终的结果不真实。辐射度量学用于精确定义与光照相关的物理量，包括精确描述光与物体表面如何作用，精确描述光源、材质、光线的传播方法等物理量。
+ Radiant Intensity #   Definition: The radiant (luminous) intensity is the power per unit solid angle (⽴体⻆) emitted by a point light source. 光源在单位立体角上辐射的能量。
+推导过程如下，其中r为到原点的距离，θ为立体角矢量与z轴正向的夹角，Φ为立体角矢量在x-y平面的投影与x轴的夹角。r∈[0,+∞)，θ∈[0, π]， φ∈[0,2π]。
+球坐标中单位球面的定义：
+  \[{\rm d} A = (r {\rm d}\theta)(r {\rm sin}\theta {\rm d}\Phi) = r^2 {\rm sin}\theta \, {\rm d}\theta {\rm d}\Phi\]  球坐标中立体角的定义：">
+<meta name=theme-color content="#FFFFFF">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="路径追踪">
+<meta property="og:description" content="路径追踪 #  Path Tracing
+  辐射度量学 #  Basic radiometry
+ 上述提到的方法均属于 Whitted-Style 光线追踪，由于此方法的光照强度等物理量没有被精确定义，导致最终的结果不真实。辐射度量学用于精确定义与光照相关的物理量，包括精确描述光与物体表面如何作用，精确描述光源、材质、光线的传播方法等物理量。
+ Radiant Intensity #   Definition: The radiant (luminous) intensity is the power per unit solid angle (⽴体⻆) emitted by a point light source. 光源在单位立体角上辐射的能量。
+推导过程如下，其中r为到原点的距离，θ为立体角矢量与z轴正向的夹角，Φ为立体角矢量在x-y平面的投影与x轴的夹角。r∈[0,+∞)，θ∈[0, π]， φ∈[0,2π]。
+球坐标中单位球面的定义：
+  \[{\rm d} A = (r {\rm d}\theta)(r {\rm sin}\theta {\rm d}\Phi) = r^2 {\rm sin}\theta \, {\rm d}\theta {\rm d}\Phi\]  球坐标中立体角的定义：">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://sujingclg.github.io/docs/notes/games101/path-racing/"><meta property="article:section" content="docs">
+<title>路径追踪 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
+<link rel=icon href=/favicon.png type=image/x-icon>
+<link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
+<script defer src=/flexsearch.min.js></script>
+<script defer src=/en.search.min.daf51c3339d52822e9a183641d2df7f7cf60b87707b81c2f5186a5a094c1546b.js integrity="sha256-2vUcMznVKCLpoYNkHS33989guHcHuBwvUYaloJTBVGs=" crossorigin=anonymous></script>
+</head><body dir=ltr>
+<input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control>
+<main class="container flex">
+<aside class=book-menu>
+<div class=book-menu-content>
+<nav>
+<h2 class=book-brand>
+<a class="flex align-center" href=/><span>计算机图形学基础</span>
+</a>
+</h2><div class=book-search>
+<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
+<div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul>
+<li>
+<input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
+<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between">
+<a href=/docs/chapter01/>第1章 引言</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter01/1-1/>1.1 图形学领域</a>
+</li><li>
+<a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a>
+</li></ul></li><li>
+<input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
+<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between">
+<a href=/docs/chapter02/>第2章 基本数学知识</a>
+</label>
+<ul>
+</ul></li><li>
+<input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
+<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between">
+<a href=/docs/chapter03/>第3章 光栅化图像</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
+</li></ul></li><li>
+<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
+<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
+<a href=/docs/chapter04/>第4章 光线追踪</a>
+</label>
+<ul>
+<li>
+<a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a>
+</li><li>
+<a href=/docs/chapter04/4-2/>4.2 透视投影</a>
+</li><li>
+<a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
+</li><li>
+<a href=/docs/chapter04/4-4/>4.4 光线对象求交</a>
+</li></ul></li><li class=book-section-flat>
+<a href=/docs/example/>Example Site</a>
+<ul>
+<li>
+<a href=/docs/example/table-of-contents/>Table of Contents</a>
+<ul>
+<li>
+<a href=/docs/example/table-of-contents/with-toc/>With ToC</a>
+</li><li>
+<a href=/docs/example/table-of-contents/without-toc/>Without ToC</a>
+</li></ul></li><li>
+<input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
+<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between">
+<a role=button>Collapsed</a>
+</label>
+<ul>
+<li>
+<a href=/docs/example/collapsed/3rd-level/>3rd Level</a>
+<ul>
+<li>
+<a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
+</li></ul></li></ul></li></ul></li><li class=book-section-flat>
+<span>Notes</span>
+<ul>
+<li>
+<input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle checked>
+<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between">
+<a role=button>Games 101</a>
+</label>
+<ul>
+<li>
+<a href=/docs/notes/games101/rasterization/>光栅化</a>
+</li><li>
+<a href=/docs/notes/games101/shading/>着色</a>
+</li><li>
+<a href=/docs/notes/games101/ray-tracing/>光线追踪</a>
+</li><li>
+<a href=/docs/notes/games101/path-racing/ class=active>路径追踪</a>
+</li></ul></li><li>
+<input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
+<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between">
+<a role=button>Games 202</a>
+</label>
+<ul>
+</ul></li></ul></li><li class=book-section-flat>
+<span>Shortcodes</span>
+<ul>
+<li>
+<a href=/docs/shortcodes/buttons/>Buttons</a>
+</li><li>
+<a href=/docs/shortcodes/columns/>Columns</a>
+</li><li>
+<a href=/docs/shortcodes/details/>Details</a>
+</li><li>
+<a href=/docs/shortcodes/expand/>Expand</a>
+</li><li>
+<a href=/docs/shortcodes/hints/>Hints</a>
+</li><li>
+<a href=/docs/shortcodes/katex/>Katex</a>
+</li><li>
+<a href=/docs/shortcodes/mermaid/>Mermaid</a>
+</li><li>
+<input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
+<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
+<a href=/docs/shortcodes/section/>Section</a>
+</label>
+<ul>
+<li>
+<a href=/docs/shortcodes/section/first-page/>First Page</a>
+</li><li>
+<a href=/docs/shortcodes/section/second-page/>Second Page</a>
+</li></ul></li><li>
+<a href=/docs/shortcodes/tabs/>Tabs</a>
+</li></ul></li></ul><ul>
+<li>
+<a href=/posts/>
+Blog
+</a>
+</li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+</div></aside><div class=book-page>
+<header class=book-header>
+<div class="flex align-center justify-between">
+<label for=menu-control>
+<img src=/svg/menu.svg class=book-icon alt=Menu>
+</label>
+<strong>路径追踪</strong>
+<label for=toc-control>
+<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
+</label>
+</div><aside class="hidden clearfix">
+<nav id=TableOfContents>
+<ul>
+<li><a href=#辐射度量学>辐射度量学</a>
+<ul>
+<li><a href=#radiant-intensity>Radiant Intensity</a></li><li><a href=#irradiance>Irradiance</a></li><li><a href=#radiance>Radiance</a></li><li><a href=#brdf>BRDF</a></li><li><a href=#反射方程>反射方程</a></li><li><a href=#渲染方程>渲染方程</a></li></ul></li><li><a href=#蒙特卡洛路径追踪>蒙特卡洛路径追踪</a>
+<ul>
+<li><a href=#蒙特卡洛积分>蒙特卡洛积分</a></li><li><a href=#路径追踪-1>路径追踪</a></li></ul></li></ul></nav></aside></header><article class=markdown><h1 id=路径追踪>
+路径追踪
+<a class=anchor href=#%e8%b7%af%e5%be%84%e8%bf%bd%e8%b8%aa>#</a>
+</h1><p>Path Tracing</p><hr>
+<br>
+<h2 id=辐射度量学>
+辐射度量学
+<a class=anchor href=#%e8%be%90%e5%b0%84%e5%ba%a6%e9%87%8f%e5%ad%a6>#</a>
+</h2><p>Basic radiometry</p><hr>
+<p>上述提到的方法均属于 Whitted-Style 光线追踪，由于此方法的光照强度等物理量没有被精确定义，导致最终的结果不真实。辐射度量学用于精确定义与光照相关的物理量，包括精确描述光与物体表面如何作用，精确描述光源、材质、光线的传播方法等物理量。</p><br>
+<h3 id=radiant-intensity>
+Radiant Intensity
+<a class=anchor href=#radiant-intensity>#</a>
+</h3><hr>
+<p>Definition: The radiant (luminous) intensity is the power per unit solid angle (⽴体⻆) emitted by a point light source. 光源在单位立体角上辐射的能量。</p><p>推导过程如下，其中r为到原点的距离，θ为立体角矢量与z轴正向的夹角，Φ为立体角矢量在x-y平面的投影与x轴的夹角。r∈[0,+∞)，θ∈[0, π]， φ∈[0,2π]。</p><p>球坐标中单位球面的定义：</p><link rel=stylesheet href=/katex/katex.min.css>
+<script defer src=/katex/katex.min.js></script>
+<script defer src=/katex/auto-render.min.js onload=renderMathInElement(document.body)></script><span>
+\[{\rm d} A = (r {\rm d}\theta)(r {\rm sin}\theta {\rm d}\Phi) = r^2 {\rm sin}\theta \, {\rm d}\theta {\rm d}\Phi\]
+</span>
+<p>球坐标中立体角的定义：</p><span>
+\[{\rm d}\omega = {{\rm d}A \over r^2} = {\rm sin}\theta \, {\rm d}\theta {\rm d}\Phi\]
+</span>
+<p>因为立体角在整个球面的积分为4π，则球面积分为</p><span>
+\[\Omega = \int_{S^2}{\rm d}\omega = \int_{0}^{2\pi}\int_{0}^{\pi}{\rm sin}\theta \, {\rm d}\theta {\rm d}\Phi = 4\pi\]
+</span>
+<p>假设点光源在各个方向辐射的能量相同，则点光源的整体功率为:</p><span>
+\[\Phi = \int_{S^2} I \, {\rm d}\omega = 4\pi I\]
+</span>
+<p>因此，Radiant Intensity为:</p><span>
+\[I = \frac{\Phi}{4\pi}\]
+</span>
+<p>由上述推到可看出 Radiant Intensity 和到光源的距离无关。立体角的物理意义是在球面空间的某个方向上张开多大的角度。</p><p>立体角 sinθdθdΦ 不光与 dθdΦ 有关，还与 sinθ 有关，说明立体角在球坐标空间中对球面的划分并不平衡，在赤道区域大，在两极区域小。</p><br>
+<h3 id=irradiance>
+Irradiance
+<a class=anchor href=#irradiance>#</a>
+</h3><hr>
+<p>Definition: The irradiance is the power per (perpendicular/projected) unit area incident on a surface point. 各个方向的光线投影到物体单位表面上的功率。注意这里是投影能量，需要乘以cosθ。
+$$
+E(x) \equiv {{{\rm d}\Phi(x)} \over {\rm d}A}
+$$
+在距离一个点光源某个固定半径的球面上的 Irradiance 如下所示，其中 E 为 Irradiance, I 为 Radiant Intensity
+$$
+E = \frac{\Phi}{4\pi r^2} = {I \over r^2}
+$$
+由上式可以看出 Irradiance 随着半径增大而衰减。</p><br>
+<h3 id=radiance>
+Radiance
+<a class=anchor href=#radiance>#</a>
+</h3><hr>
+<p>Definition: The radiance (luminance) is the power emitted, reflected, transmitted or received by a surface, per unit solid angle, per projected unit area. 光线传播过程中，在路径中的某个物体的单位表面上沿着某个立体角方向发射的能量。
+$$
+L(p,\omega) \equiv {{\rm d}^2\Phi(p,\omega) \over {\rm d}\omega {\rm d}A{\rm cos}\theta} \quad \text{(cosθ用于计算投影表面积)}
+$$</p><ul>
+<li>Recall
+<ul>
+<li>Irradiance: power per projected unit area</li><li>Intensity: power per solid angle</li></ul></li><li>So
+<ul>
+<li>Radiance: Irradiance per solid angle. 物体单位表面积在某个立体角方向上接收到的能量。</li><li>Radiance: Intensity per projected unit area.</li></ul></li></ul><p>Radiance 与 Irradiance 的区别在于后者度量物体的单位表面积在所有方向上接收到的能量，而前者只度量某个方向上接收到的能量。</p><br>
+<h3 id=brdf>
+BRDF
+<a class=anchor href=#brdf>#</a>
+</h3><hr>
+<p>Bidirectional Reflectance Distribution Function (BRDF) 双向反射分布函数</p><p>The Bidirectional Reflectance Distribution Function (BRDF) represents how much light is reflected into each outgoing direction from each incoming direction.</p><br>
+<h3 id=反射方程>
+反射方程
+<a class=anchor href=#%e5%8f%8d%e5%b0%84%e6%96%b9%e7%a8%8b>#</a>
+</h3><p>The Reflection Equation</p><hr>
+<p>观察被照射物体表面上一个单位面积，以及从此单位表面积到照相机的矢量。假设此表面积吸收了全部入射光照能量，然后向各个方向发射这些能量。考察这个单位面积上，所有入射光线在这个矢量方向上的反射光照强度贡献。</p><p><img src=/games101/image-20220212223506432.png alt=image-20220212223506432></p><br>
+<h3 id=渲染方程>
+渲染方程
+<a class=anchor href=#%e6%b8%b2%e6%9f%93%e6%96%b9%e7%a8%8b>#</a>
+</h3><hr>
+<p>Recursive Equation
+$$
+L_r(x, \omega_r) = L_e(x, \omega_r) + \int_{\Omega} L_r(x&rsquo;, -\omega_i)f(x,\omega_i,\omega_r),{\rm cos}\theta_i,{\rm d}\omega_i
+$$</p><p>全局光照：直接光照 + 间接光照</p><br>
+<h2 id=蒙特卡洛路径追踪>
+蒙特卡洛路径追踪
+<a class=anchor href=#%e8%92%99%e7%89%b9%e5%8d%a1%e6%b4%9b%e8%b7%af%e5%be%84%e8%bf%bd%e8%b8%aa>#</a>
+</h2><p>Monte Carlo Path Tracing</p><hr>
+<br>
+<h3 id=蒙特卡洛积分>
+蒙特卡洛积分
+<a class=anchor href=#%e8%92%99%e7%89%b9%e5%8d%a1%e6%b4%9b%e7%a7%af%e5%88%86>#</a>
+</h3><p>Monte Carlo Integration</p><hr>
+<p>$$
+\int f(x) {\rm d}x = {1 \over N} \sum_{i=1}^N \frac{f(X_i)}{p(X_i)} \quad X_i \sim p(x)
+$$</p><p>其中 f(x)是原函数，p(x)是概率密度函数。N越大(样本量越大)结果越准。不需要考虑积分域，因为概率密度函数隐含了此信息。</p><br>
+<h3 id=路径追踪-1>
+路径追踪
+<a class=anchor href=#%e8%b7%af%e5%be%84%e8%bf%bd%e8%b8%aa-1>#</a>
+</h3><p>Path Tracing</p><hr>
+<p>一般光线每次弹射后会有无数方向，如果每根弹射光线都要进行计算，则要被计算的光线将会呈指数级增长，导致计算过程中出现路径爆炸的问题，造成计算耗时无限延长。</p><p>由于#rays = N^#bounces^，当N=1时不会引发路径爆炸。此时，在对任何一点进行着色时，随机往一个方向采样一个ω~i~进行渲染方程(PDF)的计算。因此，用N=1进行蒙特卡洛积分的方法被称作==路径追踪==。</p><p>一般N=1时的蒙特卡洛积分噪声会很大，这可以通过在一个像素点上追踪多根光线解决。只需在每个像素上追踪更多的路径，并计算他们的亮度平均值。</p><p><img src=/games101/image-20220219123709819.png alt=image-20220219123709819></p><br>
+<p>后续的问题</p><ul>
+<li>用于终止路径追踪递归函数的俄罗斯轮盘赌算法</li><li>用于减少无效路径追踪的光源采样法</li><li>光源采样法的判断直接光照是否被阻挡算法</li><li>对于路径追踪，点光源难以处理，一般简化为面积相对小的面光源</li></ul></article><footer class=book-footer>
+<div class="flex flex-wrap justify-between">
+</div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+</footer><div class=book-comments>
+</div><label for=menu-control class="hidden book-menu-overlay"></label>
+</div><aside class=book-toc>
+<div class=book-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#辐射度量学>辐射度量学</a>
+<ul>
+<li><a href=#radiant-intensity>Radiant Intensity</a></li><li><a href=#irradiance>Irradiance</a></li><li><a href=#radiance>Radiance</a></li><li><a href=#brdf>BRDF</a></li><li><a href=#反射方程>反射方程</a></li><li><a href=#渲染方程>渲染方程</a></li></ul></li><li><a href=#蒙特卡洛路径追踪>蒙特卡洛路径追踪</a>
+<ul>
+<li><a href=#蒙特卡洛积分>蒙特卡洛积分</a></li><li><a href=#路径追踪-1>路径追踪</a></li></ul></li></ul></nav></div></aside></main></body></html>

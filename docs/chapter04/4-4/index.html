@@ -9,7 +9,7 @@
   \[f({\rm \pmb{p}}(t)) = 0 \quad 或 \quad f({\rm e} + t{\rm d}) = 0\]  圆心 c = (xc, yc, zc)，半径 R 的球面可以用如下隐式方程表示
  \[(x - x_c)^2 + (y - y_c)^2 + (z - z_c)^2 -R^2 = 0\]  我们也可以把上面的方程写成如下的向量形式：">
 <meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="4.4 光线对象相交">
+<meta name=color-scheme content="light dark"><meta property="og:title" content="4.4 光线对象求交">
 <meta property="og:description" content="4.4 光线-对象求交 #  Ray-Object Intersection
  现在我们已经生成了一条光线 e + td ，接下来我们需要找到 t > 0 时与任意物体的第一个交点。在实践中，它常用于解决一个稍微更一般的问题：求出光线和曲面上的点t在区间[t0, t1]上的第一个交点。基本的光线求交的两个边界条件是 t0 = 0时 和 t1 = +∞ 时。我们会在球体和三角形的例子中解决此问题，并在下个小节中讨论多个物体的情况。
  4.4.1 光线-球体求交 #  Ray-Sphere Intersection
@@ -18,11 +18,11 @@
  \[(x - x_c)^2 + (y - y_c)^2 + (z - z_c)^2 -R^2 = 0\]  我们也可以把上面的方程写成如下的向量形式：">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/4-4/"><meta property="article:section" content="docs">
-<title>4.4 光线对象相交 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
+<title>4.4 光线对象求交 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
 <link rel=icon href=/favicon.png type=image/x-icon>
 <link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
 <script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.ddcd5b07a5d9a059a4d4cedecd36d848e00c7f9eee7204dab211cb48e13bd6c1.js integrity="sha256-3c1bB6XZoFmk1M7ezTbYSOAMf57ucgTashHLSOE71sE=" crossorigin=anonymous></script>
+<script defer src=/en.search.min.daf51c3339d52822e9a183641d2df7f7cf60b87707b81c2f5186a5a094c1546b.js integrity="sha256-2vUcMznVKCLpoYNkHS33989guHcHuBwvUYaloJTBVGs=" crossorigin=anonymous></script>
 </head><body dir=ltr>
 <input type=checkbox class="hidden toggle" id=menu-control>
 <input type=checkbox class="hidden toggle" id=toc-control>
@@ -73,7 +73,7 @@
 </li><li>
 <a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
 </li><li>
-<a href=/docs/chapter04/4-4/ class=active>4.4 光线对象相交</a>
+<a href=/docs/chapter04/4-4/ class=active>4.4 光线对象求交</a>
 </li></ul></li><li class=book-section-flat>
 <a href=/docs/example/>Example Site</a>
 <ul>
@@ -96,6 +96,29 @@
 <li>
 <a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
 </li></ul></li></ul></li></ul></li><li class=book-section-flat>
+<span>Notes</span>
+<ul>
+<li>
+<input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle>
+<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between">
+<a role=button>Games 101</a>
+</label>
+<ul>
+<li>
+<a href=/docs/notes/games101/rasterization/>光栅化</a>
+</li><li>
+<a href=/docs/notes/games101/shading/>着色</a>
+</li><li>
+<a href=/docs/notes/games101/ray-tracing/>光线追踪</a>
+</li><li>
+<a href=/docs/notes/games101/path-racing/>路径追踪</a>
+</li></ul></li><li>
+<input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
+<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between">
+<a role=button>Games 202</a>
+</label>
+<ul>
+</ul></li></ul></li><li class=book-section-flat>
 <span>Shortcodes</span>
 <ul>
 <li>
@@ -136,7 +159,7 @@ Blog
 <label for=menu-control>
 <img src=/svg/menu.svg class=book-icon alt=Menu>
 </label>
-<strong>4.4 光线对象相交</strong>
+<strong>4.4 光线对象求交</strong>
 <label for=toc-control>
 <img src=/svg/toc.svg class=book-icon alt="Table of Contents">
 </label>

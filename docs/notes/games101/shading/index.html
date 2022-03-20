@@ -1,283 +1,52 @@
-<!doctype html><html lang=en-us dir=ltr>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="着色 #  Shading
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="着色 #  Shading
   定义：对不同的物体应用不同材质的过程。 着色具有局部性，即不考虑阴影。   Blinn-Phong 反射模型 #  Blinn-Phong Reflectance Model
  分解为漫反射、高光、环境光三项。
- 漫反射 - Diffuse #  只考虑光照强度和方向，不考虑观察方向。
-  \[L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l)\]  其中：
- L~d~ : diffusely reflected light k~d~ : diffuse coefficient (color) I/r^2^ : energy arrived at the shading point max(0, n · l) : energy received by the shading point   高光 - Specular Term #   \[半程向量: h = {\rm bisector}(\vec v, \vec l) = \frac {\vec v + \vec l}{||\vec v + \vec l||} \\ L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]   半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。 当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。 指数p值越大，越接近镜面，表面越光滑。   环境光 - Ambient #  $$ L_a = k_a + I_a $$">
-<meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="着色">
-<meta property="og:description" content="着色 #  Shading
+ 漫反射 - Diffuse #  只考虑光照强度和方向，不考虑观察方向。 $$ L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l) $$ 其中：
+ Ld : diffusely reflected light kd : diffuse coefficient (color) I/r2 : energy arrived at the shading point max(0, n · l) : energy received by the shading point   高光 - Specular Term #    \[半程向量: h = {\rm bisector}(\vec v, \vec l) = \frac {\vec v + \vec l}{||\vec v + \vec l||} \\ L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]   半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。 当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。 指数p值越大，越接近镜面，表面越光滑。   环境光 - Ambient #  $$ L_a = k_a + I_a $$"><meta name=theme-color content="#FFFFFF"><meta name=color-scheme content="light dark"><meta property="og:title" content="着色"><meta property="og:description" content="着色 #  Shading
   定义：对不同的物体应用不同材质的过程。 着色具有局部性，即不考虑阴影。   Blinn-Phong 反射模型 #  Blinn-Phong Reflectance Model
  分解为漫反射、高光、环境光三项。
- 漫反射 - Diffuse #  只考虑光照强度和方向，不考虑观察方向。
-  \[L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l)\]  其中：
- L~d~ : diffusely reflected light k~d~ : diffuse coefficient (color) I/r^2^ : energy arrived at the shading point max(0, n · l) : energy received by the shading point   高光 - Specular Term #   \[半程向量: h = {\rm bisector}(\vec v, \vec l) = \frac {\vec v + \vec l}{||\vec v + \vec l||} \\ L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]   半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。 当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。 指数p值越大，越接近镜面，表面越光滑。   环境光 - Ambient #  $$ L_a = k_a + I_a $$">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://sujingclg.github.io/docs/notes/games101/shading/"><meta property="article:section" content="docs">
-<title>着色 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
-<link rel=icon href=/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
-<script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.daf51c3339d52822e9a183641d2df7f7cf60b87707b81c2f5186a5a094c1546b.js integrity="sha256-2vUcMznVKCLpoYNkHS33989guHcHuBwvUYaloJTBVGs=" crossorigin=anonymous></script>
-</head><body dir=ltr>
-<input type=checkbox class="hidden toggle" id=menu-control>
-<input type=checkbox class="hidden toggle" id=toc-control>
-<main class="container flex">
-<aside class=book-menu>
-<div class=book-menu-content>
-<nav>
-<h2 class=book-brand>
-<a class="flex align-center" href=/><span>计算机图形学基础</span>
-</a>
-</h2><div class=book-search>
-<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
-<div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul>
-<li>
-<input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
-<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between">
-<a href=/docs/chapter01/>第1章 引言</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter01/1-1/>1.1 图形学领域</a>
-</li><li>
-<a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a>
-</li></ul></li><li>
-<input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
-<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between">
-<a href=/docs/chapter02/>第2章 基本数学知识</a>
-</label>
-<ul>
-</ul></li><li>
-<input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
-<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between">
-<a href=/docs/chapter03/>第3章 光栅化图像</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
-</li></ul></li><li>
-<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
-<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
-<a href=/docs/chapter04/>第4章 光线追踪</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a>
-</li><li>
-<a href=/docs/chapter04/4-2/>4.2 透视投影</a>
-</li><li>
-<a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
-</li><li>
-<a href=/docs/chapter04/4-4/>4.4 光线对象求交</a>
-</li></ul></li><li class=book-section-flat>
-<a href=/docs/example/>Example Site</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/>Table of Contents</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/with-toc/>With ToC</a>
-</li><li>
-<a href=/docs/example/table-of-contents/without-toc/>Without ToC</a>
-</li></ul></li><li>
-<input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
-<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between">
-<a role=button>Collapsed</a>
-</label>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/>3rd Level</a>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
-</li></ul></li></ul></li></ul></li><li class=book-section-flat>
-<span>Notes</span>
-<ul>
-<li>
-<input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle checked>
-<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between">
-<a role=button>Games 101</a>
-</label>
-<ul>
-<li>
-<a href=/docs/notes/games101/rasterization/>光栅化</a>
-</li><li>
-<a href=/docs/notes/games101/shading/ class=active>着色</a>
-</li><li>
-<a href=/docs/notes/games101/ray-tracing/>光线追踪</a>
-</li><li>
-<a href=/docs/notes/games101/path-racing/>路径追踪</a>
-</li></ul></li><li>
-<input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
-<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between">
-<a role=button>Games 202</a>
-</label>
-<ul>
-</ul></li></ul></li><li class=book-section-flat>
-<span>Shortcodes</span>
-<ul>
-<li>
-<a href=/docs/shortcodes/buttons/>Buttons</a>
-</li><li>
-<a href=/docs/shortcodes/columns/>Columns</a>
-</li><li>
-<a href=/docs/shortcodes/details/>Details</a>
-</li><li>
-<a href=/docs/shortcodes/expand/>Expand</a>
-</li><li>
-<a href=/docs/shortcodes/hints/>Hints</a>
-</li><li>
-<a href=/docs/shortcodes/katex/>Katex</a>
-</li><li>
-<a href=/docs/shortcodes/mermaid/>Mermaid</a>
-</li><li>
-<input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
-<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
-<a href=/docs/shortcodes/section/>Section</a>
-</label>
-<ul>
-<li>
-<a href=/docs/shortcodes/section/first-page/>First Page</a>
-</li><li>
-<a href=/docs/shortcodes/section/second-page/>Second Page</a>
-</li></ul></li><li>
-<a href=/docs/shortcodes/tabs/>Tabs</a>
-</li></ul></li></ul><ul>
-<li>
-<a href=/posts/>
-Blog
-</a>
-</li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
-</div></aside><div class=book-page>
-<header class=book-header>
-<div class="flex align-center justify-between">
-<label for=menu-control>
-<img src=/svg/menu.svg class=book-icon alt=Menu>
-</label>
+ 漫反射 - Diffuse #  只考虑光照强度和方向，不考虑观察方向。 $$ L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l) $$ 其中：
+ Ld : diffusely reflected light kd : diffuse coefficient (color) I/r2 : energy arrived at the shading point max(0, n · l) : energy received by the shading point   高光 - Specular Term #    \[半程向量: h = {\rm bisector}(\vec v, \vec l) = \frac {\vec v + \vec l}{||\vec v + \vec l||} \\ L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]   半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。 当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。 指数p值越大，越接近镜面，表面越光滑。   环境光 - Ambient #  $$ L_a = k_a + I_a $$"><meta property="og:type" content="article"><meta property="og:url" content="https://sujingclg.github.io/docs/notes/games101/shading/"><meta property="article:section" content="docs"><title>着色 | 计算机图形学基础</title><link rel=manifest href=/manifest.json><link rel=icon href=/favicon.png type=image/x-icon><link rel=stylesheet href=/book.min.ab46de3e725a6415339a37bba23a0067534a37289b063c9f8d011515a63097a8.css integrity="sha256-q0bePnJaZBUzmje7ojoAZ1NKNyibBjyfjQEVFaYwl6g=" crossorigin=anonymous><script defer src=/flexsearch.min.js></script>
+<script defer src=/en.search.min.ba21324315b869c3638ea99918c07b1e84ec935ebd281e00189aec9bd6c24c47.js integrity="sha256-uiEyQxW4acNjjqmZGMB7HoTsk169KB4AGJrsm9bCTEc=" crossorigin=anonymous></script></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/><span>计算机图形学基础</span></a></h2><div class=book-search><input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/><div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul><li><input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
+<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between"><a href=/docs/chapter01/>第1章 引言</a></label><ul><li><a href=/docs/chapter01/1-1/>1.1 图形学领域</a></li><li><a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a></li></ul></li><li><input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
+<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between"><a href=/docs/chapter02/>第2章 基本数学知识</a></label><ul></ul></li><li><input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
+<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between"><a href=/docs/chapter03/>第3章 光栅化图像</a></label><ul><li><a href=/docs/chapter03/3-1/>3.1 光栅化设备</a></li></ul></li><li><input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
+<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between"><a href=/docs/chapter04/>第4章 光线追踪</a></label><ul><li><a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a></li><li><a href=/docs/chapter04/4-2/>4.2 透视投影</a></li><li><a href=/docs/chapter04/4-3/>4.3 视线的计算</a></li><li><a href=/docs/chapter04/4-4/>4.4 光线对象求交</a></li></ul></li><li class=book-section-flat><a href=/docs/example/>Example Site</a><ul><li><a href=/docs/example/table-of-contents/>Table of Contents</a><ul><li><a href=/docs/example/table-of-contents/with-toc/>With ToC</a></li><li><a href=/docs/example/table-of-contents/without-toc/>Without ToC</a></li></ul></li><li><input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
+<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between"><a role=button>Collapsed</a></label><ul><li><a href=/docs/example/collapsed/3rd-level/>3rd Level</a><ul><li><a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a></li></ul></li></ul></li></ul></li><li class=book-section-flat><span>Notes</span><ul><li><input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle checked>
+<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between"><a role=button>Games 101</a></label><ul><li><a href=/docs/notes/games101/rasterization/>光栅化</a></li><li><a href=/docs/notes/games101/shading/ class=active>着色</a></li><li><a href=/docs/notes/games101/ray-tracing/>光线追踪</a></li><li><a href=/docs/notes/games101/path-racing/>路径追踪</a></li></ul></li><li><input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
+<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between"><a role=button>Games 202</a></label><ul></ul></li></ul></li><li class=book-section-flat><span>Shortcodes</span><ul><li><a href=/docs/shortcodes/buttons/>Buttons</a></li><li><a href=/docs/shortcodes/columns/>Columns</a></li><li><a href=/docs/shortcodes/details/>Details</a></li><li><a href=/docs/shortcodes/expand/>Expand</a></li><li><a href=/docs/shortcodes/hints/>Hints</a></li><li><a href=/docs/shortcodes/katex/>Katex</a></li><li><a href=/docs/shortcodes/mermaid/>Mermaid</a></li><li><input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
+<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between"><a href=/docs/shortcodes/section/>Section</a></label><ul><li><a href=/docs/shortcodes/section/first-page/>First Page</a></li><li><a href=/docs/shortcodes/section/second-page/>Second Page</a></li></ul></li><li><a href=/docs/shortcodes/tabs/>Tabs</a></li></ul></li></ul><ul><li><a href=/posts/>Blog</a></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/svg/menu.svg class=book-icon alt=Menu></label>
 <strong>着色</strong>
-<label for=toc-control>
-<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
-</label>
-</div><aside class="hidden clearfix">
-<nav id=TableOfContents>
-<ul>
-<li><a href=#blinn-phong-反射模型>Blinn-Phong 反射模型</a>
-<ul>
-<li><a href=#漫反射---diffuse>漫反射 - Diffuse</a></li><li><a href=#高光---specular-term>高光 - Specular Term</a></li><li><a href=#环境光---ambient>环境光 - Ambient</a></li><li><a href=#最终的blinn-phong反射模型公式>最终的Blinn-Phong反射模型公式</a></li></ul></li><li><a href=#着色频率>着色频率</a></li><li><a href=#图形管线实时渲染>图形管线(实时渲染)</a></li><li><a href=#三角形内插值-重心坐标>三角形内插值: 重心坐标</a>
-<ul>
-<li><a href=#重心坐标定义>重心坐标定义</a></li></ul></li><li><a href=#纹理映射>纹理映射</a>
-<ul>
-<li><a href=#简单纹理映射-漫反射颜色-deffuse-color>简单纹理映射： 漫反射颜色 (Deffuse Color)</a></li><li><a href=#纹理的高级应用>纹理的高级应用</a></li></ul></li></ul></nav></aside></header><article class=markdown><h1 id=着色>
-着色
-<a class=anchor href=#%e7%9d%80%e8%89%b2>#</a>
-</h1><p>Shading</p><hr>
-<ul>
-<li>定义：对不同的物体应用不同材质的过程。</li><li>着色具有局部性，即不考虑阴影。</li></ul><br>
-<h2 id=blinn-phong-反射模型>
-Blinn-Phong 反射模型
-<a class=anchor href=#blinn-phong-%e5%8f%8d%e5%b0%84%e6%a8%a1%e5%9e%8b>#</a>
-</h2><p>Blinn-Phong Reflectance Model</p><hr>
-<p>分解为漫反射、高光、环境光三项。</p><br>
-<h3 id=漫反射---diffuse>
-漫反射 - Diffuse
-<a class=anchor href=#%e6%bc%ab%e5%8f%8d%e5%b0%84---diffuse>#</a>
-</h3><p>只考虑光照强度和方向，不考虑观察方向。</p><link rel=stylesheet href=/katex/katex.min.css>
-<script defer src=/katex/katex.min.js></script>
+<label for=toc-control><img src=/svg/toc.svg class=book-icon alt="Table of Contents"></label></div><aside class="hidden clearfix"><nav id=TableOfContents><ul><li><a href=#blinn-phong-反射模型>Blinn-Phong 反射模型</a><ul><li><a href=#漫反射---diffuse>漫反射 - Diffuse</a></li><li><a href=#高光---specular-term>高光 - Specular Term</a></li><li><a href=#环境光---ambient>环境光 - Ambient</a></li><li><a href=#最终的blinn-phong反射模型公式>最终的Blinn-Phong反射模型公式</a></li></ul></li><li><a href=#着色频率>着色频率</a></li><li><a href=#图形管线实时渲染>图形管线(实时渲染)</a></li><li><a href=#三角形内插值-重心坐标>三角形内插值: 重心坐标</a><ul><li><a href=#重心坐标定义>重心坐标定义</a></li></ul></li><li><a href=#纹理映射>纹理映射</a><ul><li><a href=#简单纹理映射-漫反射颜色-deffuse-color>简单纹理映射： 漫反射颜色 (Deffuse Color)</a></li><li><a href=#纹理的高级应用>纹理的高级应用</a></li></ul></li></ul></nav></aside></header><article class=markdown><h1 id=着色>着色
+<a class=anchor href=#%e7%9d%80%e8%89%b2>#</a></h1><p>Shading</p><hr><ul><li>定义：对不同的物体应用不同材质的过程。</li><li>着色具有局部性，即不考虑阴影。</li></ul><br><h2 id=blinn-phong-反射模型>Blinn-Phong 反射模型
+<a class=anchor href=#blinn-phong-%e5%8f%8d%e5%b0%84%e6%a8%a1%e5%9e%8b>#</a></h2><p>Blinn-Phong Reflectance Model</p><hr><p>分解为漫反射、高光、环境光三项。</p><br><h3 id=漫反射---diffuse>漫反射 - Diffuse
+<a class=anchor href=#%e6%bc%ab%e5%8f%8d%e5%b0%84---diffuse>#</a></h3><p>只考虑光照强度和方向，不考虑观察方向。
+$$
+L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l)
+$$
+其中：</p><ul><li>L<sub>d</sub> : diffusely reflected light</li><li>k<sub>d</sub> : diffuse coefficient (color)</li><li>I/r<sup>2</sup> : energy arrived at the shading point</li><li>max(0, n · l) : energy received by the shading point</li></ul><br><h3 id=高光---specular-term>高光 - Specular Term
+<a class=anchor href=#%e9%ab%98%e5%85%89---specular-term>#</a></h3><link rel=stylesheet href=/katex/katex.min.css><script defer src=/katex/katex.min.js></script>
 <script defer src=/katex/auto-render.min.js onload=renderMathInElement(document.body)></script><span>
-\[L_d = k_d \frac{I}{r^2}{\rm max}(0, \vec n \cdot \vec l)\]
-</span>
-<p>其中：</p><ul>
-<li>L~d~ : diffusely reflected light</li><li>k~d~ : diffuse coefficient (color)</li><li>I/r^2^ : energy arrived at the shading point</li><li>max(0, n · l) : energy received by the shading point</li></ul><br>
-<h3 id=高光---specular-term>
-高光 - Specular Term
-<a class=anchor href=#%e9%ab%98%e5%85%89---specular-term>#</a>
-</h3><span>
 \[半程向量: h = {\rm bisector}(\vec v, \vec l) = \frac {\vec v + \vec l}{||\vec v + \vec l||}
 \\
-L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]
-</span>
-<ul>
-<li>半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。</li><li>当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。</li><li>指数p值越大，越接近镜面，表面越光滑。</li></ul><br>
-<h3 id=环境光---ambient>
-环境光 - Ambient
-<a class=anchor href=#%e7%8e%af%e5%a2%83%e5%85%89---ambient>#</a>
-</h3><p>$$
+L_s = k_s \frac{I}{r^2} {\rm max}(0, {\rm cos} \alpha)^p = k_s \frac{I}{r^2} {\rm max}(0, \vec n \cdot \vec h)^p\]</span><ul><li>半程向量为入射光线与反射光线在观察点处的角平分线所在的向量。</li><li>当且仅当半程向量接近物体表面法线时，反射光线呈现高光态。</li><li>指数p值越大，越接近镜面，表面越光滑。</li></ul><br><h3 id=环境光---ambient>环境光 - Ambient
+<a class=anchor href=#%e7%8e%af%e5%a2%83%e5%85%89---ambient>#</a></h3><p>$$
 L_a = k_a + I_a
-$$</p><ul>
-<li>环境光是常数颜色，与光线和观察角度无关。同时会对所有光源加上同样的平均光照强度。</li><li>保证视口中的所有物体都被光照覆盖，没有黑区。</li></ul><br>
-<h3 id=最终的blinn-phong反射模型公式>
-最终的Blinn-Phong反射模型公式
-<a class=anchor href=#%e6%9c%80%e7%bb%88%e7%9a%84blinn-phong%e5%8f%8d%e5%b0%84%e6%a8%a1%e5%9e%8b%e5%85%ac%e5%bc%8f>#</a>
-</h3><p>$$
+$$</p><ul><li>环境光是常数颜色，与光线和观察角度无关。同时会对所有光源加上同样的平均光照强度。</li><li>保证视口中的所有物体都被光照覆盖，没有黑区。</li></ul><br><h3 id=最终的blinn-phong反射模型公式>最终的Blinn-Phong反射模型公式
+<a class=anchor href=#%e6%9c%80%e7%bb%88%e7%9a%84blinn-phong%e5%8f%8d%e5%b0%84%e6%a8%a1%e5%9e%8b%e5%85%ac%e5%bc%8f>#</a></h3><p>$$
 L = L_a + L_d + L_s = k_aI_a + k_d(I/r^2){\rm max}(0, \vec n \cdot \vec l) + k_s(I/r^2){\rm max}(0, \vec n \cdot \vec h)^p
-$$</p><br>
-<h2 id=着色频率>
-着色频率
-<a class=anchor href=#%e7%9d%80%e8%89%b2%e9%a2%91%e7%8e%87>#</a>
-</h2><p>Shading Frequencies</p><hr>
-<ul>
-<li>Shade each triangle (Flat shading): 对每个三角形片元计算颜色，同一个三角形片元内部的像素具有相同的值。</li><li>Shade each vertex (Gouraud shading): 计算每个顶点的法线，从而计算出顶点颜色，三角形内部颜色通过顶点间插值得到。</li><li>Shade each pixel (Phong shading): 计算每个顶点的法线，三角形内部每个像素上的法线通过顶点间的法线插值得到，从而计算出每个像素的颜色。</li></ul><br>
-<h2 id=图形管线实时渲染>
-图形管线(实时渲染)
-<a class=anchor href=#%e5%9b%be%e5%bd%a2%e7%ae%a1%e7%ba%bf%e5%ae%9e%e6%97%b6%e6%b8%b2%e6%9f%93>#</a>
-</h2><p>Graphics (Real-time Rendering) Pipeline</p><hr>
-<p>用户并不需要对每个fragment分别编写渲染函数，因为渲染函数会被作用在每个fragment上，所以不需要在其中写for循环。</p><br>
-<h2 id=三角形内插值-重心坐标>
-三角形内插值: 重心坐标
-<a class=anchor href=#%e4%b8%89%e8%a7%92%e5%bd%a2%e5%86%85%e6%8f%92%e5%80%bc-%e9%87%8d%e5%bf%83%e5%9d%90%e6%a0%87>#</a>
-</h2><p>Interpolation Across Triangles: Barycentric Coordinates</p><hr>
-<p>为什么要插值？</p><ul>
-<li>已知三角形顶点的各种量，需要在三角形内部平滑过渡。</li></ul><p>哪些量需要插值？</p><ul>
-<li>Texture coordinates, colors, normal vectors (Phong shading), &mldr;</li></ul><h3 id=重心坐标定义>
-重心坐标定义
-<a class=anchor href=#%e9%87%8d%e5%bf%83%e5%9d%90%e6%a0%87%e5%ae%9a%e4%b9%89>#</a>
-</h3><p>三角形内任一点(x, y)都可以表示为三角形顶点 A, B, C 的坐标的线性组合。
+$$</p><br><h2 id=着色频率>着色频率
+<a class=anchor href=#%e7%9d%80%e8%89%b2%e9%a2%91%e7%8e%87>#</a></h2><p>Shading Frequencies</p><hr><ul><li>Shade each triangle (Flat shading): 对每个三角形片元计算颜色，同一个三角形片元内部的像素具有相同的值。</li><li>Shade each vertex (Gouraud shading): 计算每个顶点的法线，从而计算出顶点颜色，三角形内部颜色通过顶点间插值得到。</li><li>Shade each pixel (Phong shading): 计算每个顶点的法线，三角形内部每个像素上的法线通过顶点间的法线插值得到，从而计算出每个像素的颜色。</li></ul><br><h2 id=图形管线实时渲染>图形管线(实时渲染)
+<a class=anchor href=#%e5%9b%be%e5%bd%a2%e7%ae%a1%e7%ba%bf%e5%ae%9e%e6%97%b6%e6%b8%b2%e6%9f%93>#</a></h2><p>Graphics (Real-time Rendering) Pipeline</p><hr><p>用户并不需要对每个fragment分别编写渲染函数，因为渲染函数会被作用在每个fragment上，所以不需要在其中写for循环。</p><br><h2 id=三角形内插值-重心坐标>三角形内插值: 重心坐标
+<a class=anchor href=#%e4%b8%89%e8%a7%92%e5%bd%a2%e5%86%85%e6%8f%92%e5%80%bc-%e9%87%8d%e5%bf%83%e5%9d%90%e6%a0%87>#</a></h2><p>Interpolation Across Triangles: Barycentric Coordinates</p><hr><p>为什么要插值？</p><ul><li>已知三角形顶点的各种量，需要在三角形内部平滑过渡。</li></ul><p>哪些量需要插值？</p><ul><li>Texture coordinates, colors, normal vectors (Phong shading), &mldr;</li></ul><h3 id=重心坐标定义>重心坐标定义
+<a class=anchor href=#%e9%87%8d%e5%bf%83%e5%9d%90%e6%a0%87%e5%ae%9a%e4%b9%89>#</a></h3><p>三角形内任一点(x, y)都可以表示为三角形顶点 A, B, C 的坐标的线性组合。
 $$
 (x, y) = \alpha A + \beta B + \gamma C
 $$
-上式中 α、β、γ 为线性组合系数，即为==重心坐标==，需满足如下条件：</p><span>
-\[\alpha + \beta + \gamma = 1 \quad \text{(保证点在三角形所在平面上)}
+上式中 α、β、γ 为线性组合系数，即为==重心坐标==，需满足如下条件：</p><span>\[\alpha + \beta + \gamma = 1 \quad \text{(保证点在三角形所在平面上)}
 \\
-\alpha ,\, \beta ,\,\gamma > 0 \quad \text{(保证点在三角形内部)}\]
-</span>
-<p>如何计算：重心坐标是连接(x,y)点与三角形三个顶点，将三角形分成三个子三角形，计算每个子三角形的面积所占父三角形面积的比例。也可按照下式计算。</p><p><img src=/games101/image-20220226225928250.png alt=image-20220226225928250></p><br>
-<h2 id=纹理映射>
-纹理映射
-<a class=anchor href=#%e7%ba%b9%e7%90%86%e6%98%a0%e5%b0%84>#</a>
-</h2><p>Texture Mapping</p><hr>
-<p>共用一套着色模型的三维物体表面的不同位置，定义不同的属性（漫反射系数等），从而达到纹理映射的目的。</p><br>
-<h3 id=简单纹理映射-漫反射颜色-deffuse-color>
-简单纹理映射： 漫反射颜色 (Deffuse Color)
-<a class=anchor href=#%e7%ae%80%e5%8d%95%e7%ba%b9%e7%90%86%e6%98%a0%e5%b0%84-%e6%bc%ab%e5%8f%8d%e5%b0%84%e9%a2%9c%e8%89%b2-deffuse-color>#</a>
-</h3><ul>
-<li>对每个光栅化屏幕采样点(x,y)（一般是像素中心），计算(x,y)点的纹理坐标(u,v)（使用重心坐标）</li><li>之后根据(u,v)在纹理图上采样，得到颜色值</li><li>将上一步获得的颜色值，通过漫反射系数的方式，设置在每个采样点上。</li></ul><br>
-<p>如果纹理图的面积远小于要映射到的物体的表面积，会造成纹理被放大，从而出现锯齿。这种问题的深层原因是像素在纹理上采样，由于纹理图较小，造成采样点映射到纹理图的对应点的坐标是一些非整数的值（一般只有整数值才能对应到纹理图上的一个像素）。如果单纯采用四舍五入取整数来对纹理图进行采样，会造成多个屏幕像素采样到相同的纹理像素上，从而产生锯齿。这种情况下需要在纹理图上对这些非整数的点进行双线性插值，从而在实际渲染中得到模糊效果。此外也可用Bicubic进行三次插值，以得到更好的结果。</p><p>如果纹理图的面积过大，更多远处的纹理像素点会被屏幕像素点覆盖，导致对纹理图的采样过于稀疏，产生摩尔纹。超采样（用更密集的采样点进行采样）会解决这种问题，但会导致计算量增大。由于这种现象是由于采样造成的，而采样是一种Point Query，可以通过使用范围查询（Range Query）方法代替采样方法，之后再光栅化，则可以解决此问题。范围查询即通过对屏幕像素覆盖的多个纹理像素取平均值，作为屏幕像素的值。</p><p>Mipmap，一种对纹理像素取平均值的方法。Allowing (fast, approx., square) range queries.</p><p>Mipmap会产生Overblur，导致远处的纹理过于模糊。可通过各向异性过滤（Anisotropic Filtering）部分解决问题。此外还有EWA过滤。各向异性过滤只会增加显存开销，不会显著增加计算量。</p><br>
-<h3 id=纹理的高级应用>
-纹理的高级应用
-<a class=anchor href=#%e7%ba%b9%e7%90%86%e7%9a%84%e9%ab%98%e7%ba%a7%e5%ba%94%e7%94%a8>#</a>
-</h3><ul>
-<li>
-<p>环境光照 (Environment Map)</p><p>又称环境贴图，用纹理描述环境光，贴在物体表面，产生更为逼真的反射效果。</p></li><li>
-<p>凹凸贴图 (Bump Mapping)</p><p>纹理不止可以定义物体表面不同位置的颜色，还可以定义其他属性，比如定义表面上一点相对于所在表面的相对高度。此时会在不改变几何形体的情况下改变各个三角形片元的法线方向，从而在着色过程中产生凹凸不平的效果。</p></li><li>
-<p>位移贴图 (Displacement Mapping)</p><p>由于凹凸贴图在物体边缘和阴影上不起作用，从而造成失真，位移贴图会根据纹理信息对三角形顶点做真实的位置移动，从而解决此问题。此方法要求三角形足够细密，从而使模型变化足以匹配纹理的变化，但这会使得采样率变高，导致计算量增加。</p><p>DirectX的动态曲面细分(Dynamic Tessellation)功能可以让三角形密度按需匹配纹理，OpenGL无此功能。</p></li><li>
-<p>三维纹理</p><p>借助三维空间中的噪声函数动态计算空间中的纹理，使纹理可以覆盖到物体内部。可用于体渲染。</p></li></ul></article><footer class=book-footer>
-<div class="flex flex-wrap justify-between">
-</div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
-</footer><div class=book-comments>
-</div><label for=menu-control class="hidden book-menu-overlay"></label>
-</div><aside class=book-toc>
-<div class=book-toc-content>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#blinn-phong-反射模型>Blinn-Phong 反射模型</a>
-<ul>
-<li><a href=#漫反射---diffuse>漫反射 - Diffuse</a></li><li><a href=#高光---specular-term>高光 - Specular Term</a></li><li><a href=#环境光---ambient>环境光 - Ambient</a></li><li><a href=#最终的blinn-phong反射模型公式>最终的Blinn-Phong反射模型公式</a></li></ul></li><li><a href=#着色频率>着色频率</a></li><li><a href=#图形管线实时渲染>图形管线(实时渲染)</a></li><li><a href=#三角形内插值-重心坐标>三角形内插值: 重心坐标</a>
-<ul>
-<li><a href=#重心坐标定义>重心坐标定义</a></li></ul></li><li><a href=#纹理映射>纹理映射</a>
-<ul>
-<li><a href=#简单纹理映射-漫反射颜色-deffuse-color>简单纹理映射： 漫反射颜色 (Deffuse Color)</a></li><li><a href=#纹理的高级应用>纹理的高级应用</a></li></ul></li></ul></nav></div></aside></main></body></html>
+\alpha ,\, \beta ,\,\gamma > 0 \quad \text{(保证点在三角形内部)}\]</span><p>如何计算：重心坐标是连接(x,y)点与三角形三个顶点，将三角形分成三个子三角形，计算每个子三角形的面积所占父三角形面积的比例。也可按照下式计算。</p><p><img src=/games101/image-20220226225928250.png alt=image-20220226225928250></p><br><h2 id=纹理映射>纹理映射
+<a class=anchor href=#%e7%ba%b9%e7%90%86%e6%98%a0%e5%b0%84>#</a></h2><p>Texture Mapping</p><hr><p>共用一套着色模型的三维物体表面的不同位置，定义不同的属性（漫反射系数等），从而达到纹理映射的目的。</p><br><h3 id=简单纹理映射-漫反射颜色-deffuse-color>简单纹理映射： 漫反射颜色 (Deffuse Color)
+<a class=anchor href=#%e7%ae%80%e5%8d%95%e7%ba%b9%e7%90%86%e6%98%a0%e5%b0%84-%e6%bc%ab%e5%8f%8d%e5%b0%84%e9%a2%9c%e8%89%b2-deffuse-color>#</a></h3><ul><li>对每个光栅化屏幕采样点(x,y)（一般是像素中心），计算(x,y)点的纹理坐标(u,v)（使用重心坐标）</li><li>之后根据(u,v)在纹理图上采样，得到颜色值</li><li>将上一步获得的颜色值，通过漫反射系数的方式，设置在每个采样点上。</li></ul><br><p>如果纹理图的面积远小于要映射到的物体的表面积，会造成纹理被放大，从而出现锯齿。这种问题的深层原因是像素在纹理上采样，由于纹理图较小，造成采样点映射到纹理图的对应点的坐标是一些非整数的值（一般只有整数值才能对应到纹理图上的一个像素）。如果单纯采用四舍五入取整数来对纹理图进行采样，会造成多个屏幕像素采样到相同的纹理像素上，从而产生锯齿。这种情况下需要在纹理图上对这些非整数的点进行双线性插值，从而在实际渲染中得到模糊效果。此外也可用Bicubic进行三次插值，以得到更好的结果。</p><p>如果纹理图的面积过大，更多远处的纹理像素点会被屏幕像素点覆盖，导致对纹理图的采样过于稀疏，产生摩尔纹。超采样（用更密集的采样点进行采样）会解决这种问题，但会导致计算量增大。由于这种现象是由于采样造成的，而采样是一种Point Query，可以通过使用范围查询（Range Query）方法代替采样方法，之后再光栅化，则可以解决此问题。范围查询即通过对屏幕像素覆盖的多个纹理像素取平均值，作为屏幕像素的值。</p><p>Mipmap，一种对纹理像素取平均值的方法。Allowing (fast, approx., square) range queries.</p><p>Mipmap会产生Overblur，导致远处的纹理过于模糊。可通过各向异性过滤（Anisotropic Filtering）部分解决问题。此外还有EWA过滤。各向异性过滤只会增加显存开销，不会显著增加计算量。</p><br><h3 id=纹理的高级应用>纹理的高级应用
+<a class=anchor href=#%e7%ba%b9%e7%90%86%e7%9a%84%e9%ab%98%e7%ba%a7%e5%ba%94%e7%94%a8>#</a></h3><ul><li><p>环境光照 (Environment Map)</p><p>又称环境贴图，用纹理描述环境光，贴在物体表面，产生更为逼真的反射效果。</p></li><li><p>凹凸贴图 (Bump Mapping)</p><p>纹理不止可以定义物体表面不同位置的颜色，还可以定义其他属性，比如定义表面上一点相对于所在表面的相对高度。此时会在不改变几何形体的情况下改变各个三角形片元的法线方向，从而在着色过程中产生凹凸不平的效果。</p></li><li><p>位移贴图 (Displacement Mapping)</p><p>由于凹凸贴图在物体边缘和阴影上不起作用，从而造成失真，位移贴图会根据纹理信息对三角形顶点做真实的位置移动，从而解决此问题。此方法要求三角形足够细密，从而使模型变化足以匹配纹理的变化，但这会使得采样率变高，导致计算量增加。</p><p>DirectX的动态曲面细分(Dynamic Tessellation)功能可以让三角形密度按需匹配纹理，OpenGL无此功能。</p></li><li><p>三维纹理</p><p>借助三维空间中的噪声函数动态计算空间中的纹理，使纹理可以覆盖到物体内部。可用于体渲染。</p></li></ul></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script></footer><div class=book-comments></div><label for=menu-control class="hidden book-menu-overlay"></label></div><aside class=book-toc><div class=book-toc-content><nav id=TableOfContents><ul><li><a href=#blinn-phong-反射模型>Blinn-Phong 反射模型</a><ul><li><a href=#漫反射---diffuse>漫反射 - Diffuse</a></li><li><a href=#高光---specular-term>高光 - Specular Term</a></li><li><a href=#环境光---ambient>环境光 - Ambient</a></li><li><a href=#最终的blinn-phong反射模型公式>最终的Blinn-Phong反射模型公式</a></li></ul></li><li><a href=#着色频率>着色频率</a></li><li><a href=#图形管线实时渲染>图形管线(实时渲染)</a></li><li><a href=#三角形内插值-重心坐标>三角形内插值: 重心坐标</a><ul><li><a href=#重心坐标定义>重心坐标定义</a></li></ul></li><li><a href=#纹理映射>纹理映射</a><ul><li><a href=#简单纹理映射-漫反射颜色-deffuse-color>简单纹理映射： 漫反射颜色 (Deffuse Color)</a></li><li><a href=#纹理的高级应用>纹理的高级应用</a></li></ul></li></ul></nav></div></aside></main></body></html>

@@ -1,186 +1,27 @@
-<!doctype html><html lang=en-us dir=ltr>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="4.2 透视投影 #  Perspective
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="4.2 透视投影 #  Perspective
  对于如何在2D绘画或绘图上展示一个3D物体或场景的问题，艺术家们在计算机科学家开始之前已经有数百年的研究历史了。照片同样是使用2D图像展现3D厂家。虽然制作图像的非常规方法有很多，从立体主义绘画到鱼眼镜头（图4.2）再到外设照相机，但艺术、摄影以及计算机图形学的标准方法都是线性透视（linear perspective），将三维物体投射到图像平面上，使场景中的直线变成图像中的直线。
 图4.2 使用鱼眼镜头得到的图像并不是线性透视图像。图片由Philip Greenspun提供。 最简单的投影类型为平行投影，在这种类型的投影中，3D空间中的点沿着投影方向移动，直到与图像平面相交，从而映射成2D平面上的点（图4.3-4.4）。产生的视图由选择的投影方向和图像平面决定。如果图像平面与视图方向垂直，产生的投影叫做正交投影；否则叫做倾斜投影。
 一些书籍对平行于坐标轴的投影方向仍在沿用“正投影”的名称。  图4.3 当投影线与图像平面平行和垂直时，产生的投影视图称为正交投影。 图4.4 与图像平面成某个角度的平行投影成为倾斜投影（右图）。在透视投影中，投影线全部穿过观察点，而非互相平行（左图）。图示中的透视图是非倾斜的，因为绘制出的穿过图像中心的投影线将垂直于图像平面。 平行投影常用于机械和建筑绘图，因为这种投影方式可以保持直线的平行，也可以保持平行于图像平面的平面对象的大小和形状。
 平行投影的优点也是它的局限性。在我们的日常生活中，物体离得越远，看上去就越小，正因如此，延伸到远处的平行直线看上去并不平行。这是因为眼睛和照相机不会从一个单一的观察方向采集光线；它们采集通过一个特定观察点(viewpoint)的光线。正如文艺复兴以来艺术家们所认为的那样，我们可以通过透视投影生成自然视图(natural-looking views)：我们只是沿着穿过一个点（观察点）的直线投影，而不是沿着平行线投影（图4.4）。通过这种方式，离观察点更远的物体在投影时就会很自然地变得更小。一个透视图取决于选择的观察点（而不是投影方向）和成像平面。和平行视图一样，也存在倾斜和非倾斜的透视图；其区别在于是否是基于图像中心的投影方向进行投影。
 你也许已经学习过三点透视的艺术规范（一种手工构造透视图的方法）（图4.5）。关于透视图的一个令人惊讶的事实是，如果我们遵循透视图下的简单数学规则，那么透视图绘制的所有规则都将被自动遵循：物体直接被投射到眼睛，它们被绘制在眼前看到的视图平面上。
-图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。 ">
-<meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="4.2 透视投影">
-<meta property="og:description" content="4.2 透视投影 #  Perspective
+图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。 "><meta name=theme-color content="#FFFFFF"><meta name=color-scheme content="light dark"><meta property="og:title" content="4.2 透视投影"><meta property="og:description" content="4.2 透视投影 #  Perspective
  对于如何在2D绘画或绘图上展示一个3D物体或场景的问题，艺术家们在计算机科学家开始之前已经有数百年的研究历史了。照片同样是使用2D图像展现3D厂家。虽然制作图像的非常规方法有很多，从立体主义绘画到鱼眼镜头（图4.2）再到外设照相机，但艺术、摄影以及计算机图形学的标准方法都是线性透视（linear perspective），将三维物体投射到图像平面上，使场景中的直线变成图像中的直线。
 图4.2 使用鱼眼镜头得到的图像并不是线性透视图像。图片由Philip Greenspun提供。 最简单的投影类型为平行投影，在这种类型的投影中，3D空间中的点沿着投影方向移动，直到与图像平面相交，从而映射成2D平面上的点（图4.3-4.4）。产生的视图由选择的投影方向和图像平面决定。如果图像平面与视图方向垂直，产生的投影叫做正交投影；否则叫做倾斜投影。
 一些书籍对平行于坐标轴的投影方向仍在沿用“正投影”的名称。  图4.3 当投影线与图像平面平行和垂直时，产生的投影视图称为正交投影。 图4.4 与图像平面成某个角度的平行投影成为倾斜投影（右图）。在透视投影中，投影线全部穿过观察点，而非互相平行（左图）。图示中的透视图是非倾斜的，因为绘制出的穿过图像中心的投影线将垂直于图像平面。 平行投影常用于机械和建筑绘图，因为这种投影方式可以保持直线的平行，也可以保持平行于图像平面的平面对象的大小和形状。
 平行投影的优点也是它的局限性。在我们的日常生活中，物体离得越远，看上去就越小，正因如此，延伸到远处的平行直线看上去并不平行。这是因为眼睛和照相机不会从一个单一的观察方向采集光线；它们采集通过一个特定观察点(viewpoint)的光线。正如文艺复兴以来艺术家们所认为的那样，我们可以通过透视投影生成自然视图(natural-looking views)：我们只是沿着穿过一个点（观察点）的直线投影，而不是沿着平行线投影（图4.4）。通过这种方式，离观察点更远的物体在投影时就会很自然地变得更小。一个透视图取决于选择的观察点（而不是投影方向）和成像平面。和平行视图一样，也存在倾斜和非倾斜的透视图；其区别在于是否是基于图像中心的投影方向进行投影。
 你也许已经学习过三点透视的艺术规范（一种手工构造透视图的方法）（图4.5）。关于透视图的一个令人惊讶的事实是，如果我们遵循透视图下的简单数学规则，那么透视图绘制的所有规则都将被自动遵循：物体直接被投射到眼睛，它们被绘制在眼前看到的视图平面上。
-图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。 ">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/4-2/"><meta property="article:section" content="docs">
-<title>4.2 透视投影 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
-<link rel=icon href=/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
-<script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.daf51c3339d52822e9a183641d2df7f7cf60b87707b81c2f5186a5a094c1546b.js integrity="sha256-2vUcMznVKCLpoYNkHS33989guHcHuBwvUYaloJTBVGs=" crossorigin=anonymous></script>
-</head><body dir=ltr>
-<input type=checkbox class="hidden toggle" id=menu-control>
-<input type=checkbox class="hidden toggle" id=toc-control>
-<main class="container flex">
-<aside class=book-menu>
-<div class=book-menu-content>
-<nav>
-<h2 class=book-brand>
-<a class="flex align-center" href=/><span>计算机图形学基础</span>
-</a>
-</h2><div class=book-search>
-<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
-<div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul>
-<li>
-<input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
-<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between">
-<a href=/docs/chapter01/>第1章 引言</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter01/1-1/>1.1 图形学领域</a>
-</li><li>
-<a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a>
-</li></ul></li><li>
-<input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
-<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between">
-<a href=/docs/chapter02/>第2章 基本数学知识</a>
-</label>
-<ul>
-</ul></li><li>
-<input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
-<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between">
-<a href=/docs/chapter03/>第3章 光栅化图像</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
-</li></ul></li><li>
-<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle checked>
-<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
-<a href=/docs/chapter04/>第4章 光线追踪</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a>
-</li><li>
-<a href=/docs/chapter04/4-2/ class=active>4.2 透视投影</a>
-</li><li>
-<a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
-</li><li>
-<a href=/docs/chapter04/4-4/>4.4 光线对象求交</a>
-</li></ul></li><li class=book-section-flat>
-<a href=/docs/example/>Example Site</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/>Table of Contents</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/with-toc/>With ToC</a>
-</li><li>
-<a href=/docs/example/table-of-contents/without-toc/>Without ToC</a>
-</li></ul></li><li>
-<input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
-<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between">
-<a role=button>Collapsed</a>
-</label>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/>3rd Level</a>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
-</li></ul></li></ul></li></ul></li><li class=book-section-flat>
-<span>Notes</span>
-<ul>
-<li>
-<input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle>
-<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between">
-<a role=button>Games 101</a>
-</label>
-<ul>
-<li>
-<a href=/docs/notes/games101/rasterization/>光栅化</a>
-</li><li>
-<a href=/docs/notes/games101/shading/>着色</a>
-</li><li>
-<a href=/docs/notes/games101/ray-tracing/>光线追踪</a>
-</li><li>
-<a href=/docs/notes/games101/path-racing/>路径追踪</a>
-</li></ul></li><li>
-<input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
-<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between">
-<a role=button>Games 202</a>
-</label>
-<ul>
-</ul></li></ul></li><li class=book-section-flat>
-<span>Shortcodes</span>
-<ul>
-<li>
-<a href=/docs/shortcodes/buttons/>Buttons</a>
-</li><li>
-<a href=/docs/shortcodes/columns/>Columns</a>
-</li><li>
-<a href=/docs/shortcodes/details/>Details</a>
-</li><li>
-<a href=/docs/shortcodes/expand/>Expand</a>
-</li><li>
-<a href=/docs/shortcodes/hints/>Hints</a>
-</li><li>
-<a href=/docs/shortcodes/katex/>Katex</a>
-</li><li>
-<a href=/docs/shortcodes/mermaid/>Mermaid</a>
-</li><li>
-<input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
-<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
-<a href=/docs/shortcodes/section/>Section</a>
-</label>
-<ul>
-<li>
-<a href=/docs/shortcodes/section/first-page/>First Page</a>
-</li><li>
-<a href=/docs/shortcodes/section/second-page/>Second Page</a>
-</li></ul></li><li>
-<a href=/docs/shortcodes/tabs/>Tabs</a>
-</li></ul></li></ul><ul>
-<li>
-<a href=/posts/>
-Blog
-</a>
-</li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
-</div></aside><div class=book-page>
-<header class=book-header>
-<div class="flex align-center justify-between">
-<label for=menu-control>
-<img src=/svg/menu.svg class=book-icon alt=Menu>
-</label>
+图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。 "><meta property="og:type" content="article"><meta property="og:url" content="https://sujingclg.github.io/docs/chapter04/4-2/"><meta property="article:section" content="docs"><title>4.2 透视投影 | 计算机图形学基础</title><link rel=manifest href=/manifest.json><link rel=icon href=/favicon.png type=image/x-icon><link rel=stylesheet href=/book.min.ab46de3e725a6415339a37bba23a0067534a37289b063c9f8d011515a63097a8.css integrity="sha256-q0bePnJaZBUzmje7ojoAZ1NKNyibBjyfjQEVFaYwl6g=" crossorigin=anonymous><script defer src=/flexsearch.min.js></script>
+<script defer src=/en.search.min.ba21324315b869c3638ea99918c07b1e84ec935ebd281e00189aec9bd6c24c47.js integrity="sha256-uiEyQxW4acNjjqmZGMB7HoTsk169KB4AGJrsm9bCTEc=" crossorigin=anonymous></script></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/><span>计算机图形学基础</span></a></h2><div class=book-search><input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/><div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul><li><input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
+<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between"><a href=/docs/chapter01/>第1章 引言</a></label><ul><li><a href=/docs/chapter01/1-1/>1.1 图形学领域</a></li><li><a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a></li></ul></li><li><input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
+<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between"><a href=/docs/chapter02/>第2章 基本数学知识</a></label><ul></ul></li><li><input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
+<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between"><a href=/docs/chapter03/>第3章 光栅化图像</a></label><ul><li><a href=/docs/chapter03/3-1/>3.1 光栅化设备</a></li></ul></li><li><input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle checked>
+<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between"><a href=/docs/chapter04/>第4章 光线追踪</a></label><ul><li><a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a></li><li><a href=/docs/chapter04/4-2/ class=active>4.2 透视投影</a></li><li><a href=/docs/chapter04/4-3/>4.3 视线的计算</a></li><li><a href=/docs/chapter04/4-4/>4.4 光线对象求交</a></li></ul></li><li class=book-section-flat><a href=/docs/example/>Example Site</a><ul><li><a href=/docs/example/table-of-contents/>Table of Contents</a><ul><li><a href=/docs/example/table-of-contents/with-toc/>With ToC</a></li><li><a href=/docs/example/table-of-contents/without-toc/>Without ToC</a></li></ul></li><li><input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
+<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between"><a role=button>Collapsed</a></label><ul><li><a href=/docs/example/collapsed/3rd-level/>3rd Level</a><ul><li><a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a></li></ul></li></ul></li></ul></li><li class=book-section-flat><span>Notes</span><ul><li><input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle>
+<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between"><a role=button>Games 101</a></label><ul><li><a href=/docs/notes/games101/rasterization/>光栅化</a></li><li><a href=/docs/notes/games101/shading/>着色</a></li><li><a href=/docs/notes/games101/ray-tracing/>光线追踪</a></li><li><a href=/docs/notes/games101/path-racing/>路径追踪</a></li></ul></li><li><input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
+<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between"><a role=button>Games 202</a></label><ul></ul></li></ul></li><li class=book-section-flat><span>Shortcodes</span><ul><li><a href=/docs/shortcodes/buttons/>Buttons</a></li><li><a href=/docs/shortcodes/columns/>Columns</a></li><li><a href=/docs/shortcodes/details/>Details</a></li><li><a href=/docs/shortcodes/expand/>Expand</a></li><li><a href=/docs/shortcodes/hints/>Hints</a></li><li><a href=/docs/shortcodes/katex/>Katex</a></li><li><a href=/docs/shortcodes/mermaid/>Mermaid</a></li><li><input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
+<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between"><a href=/docs/shortcodes/section/>Section</a></label><ul><li><a href=/docs/shortcodes/section/first-page/>First Page</a></li><li><a href=/docs/shortcodes/section/second-page/>Second Page</a></li></ul></li><li><a href=/docs/shortcodes/tabs/>Tabs</a></li></ul></li></ul><ul><li><a href=/posts/>Blog</a></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/svg/menu.svg class=book-icon alt=Menu></label>
 <strong>4.2 透视投影</strong>
-<label for=toc-control>
-<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
-</label>
-</div><aside class="hidden clearfix">
-<nav id=TableOfContents></nav></aside></header><article class=markdown><h1 id=42-透视投影>
-4.2 透视投影
-<a class=anchor href=#42-%e9%80%8f%e8%a7%86%e6%8a%95%e5%bd%b1>#</a>
-</h1><p>Perspective</p><hr>
-<p>对于如何在2D绘画或绘图上展示一个3D物体或场景的问题，艺术家们在计算机科学家开始之前已经有数百年的研究历史了。照片同样是使用2D图像展现3D厂家。虽然制作图像的非常规方法有很多，从立体主义绘画到鱼眼镜头（图4.2）再到外设照相机，但艺术、摄影以及计算机图形学的标准方法都是<em>线性透视</em>（linear perspective），将三维物体投射到图像平面上，使场景中的直线变成图像中的直线。</p><center style="font-size: 14px">图4.2 使用鱼眼镜头得到的图像并不是线性透视图像。图片由Philip Greenspun提供。</center>
-<p>最简单的投影类型为平行投影，在这种类型的投影中，3D空间中的点沿着投影方向移动，直到与图像平面相交，从而映射成2D平面上的点（图4.3-4.4）。产生的视图由选择的投影方向和图像平面决定。如果图像平面与视图方向垂直，产生的投影叫做正交投影；否则叫做倾斜投影。</p><blockquote class="book-hint info">
-一些书籍对平行于坐标轴的投影方向仍在沿用“正投影”的名称。
-</blockquote><center style="font-size: 14px">图4.3 当投影线与图像平面平行和垂直时，产生的投影视图称为正交投影。</center>
-<center style="font-size: 14px">图4.4 与图像平面成某个角度的平行投影成为倾斜投影（右图）。在透视投影中，投影线全部穿过观察点，而非互相平行（左图）。图示中的透视图是非倾斜的，因为绘制出的穿过图像中心的投影线将垂直于图像平面。</center>
-<p>平行投影常用于机械和建筑绘图，因为这种投影方式可以保持直线的平行，也可以保持平行于图像平面的平面对象的大小和形状。</p><p>平行投影的优点也是它的局限性。在我们的日常生活中，物体离得越远，看上去就越小，正因如此，延伸到远处的平行直线看上去并不平行。这是因为眼睛和照相机不会从一个单一的观察方向采集光线；它们采集通过一个特定观察点(viewpoint)的光线。正如文艺复兴以来艺术家们所认为的那样，我们可以通过透视投影生成自然视图(natural-looking views)：我们只是沿着穿过一个点（观察点）的直线投影，而不是沿着平行线投影（图4.4）。通过这种方式，离观察点更远的物体在投影时就会很自然地变得更小。一个透视图取决于选择的观察点（而不是投影方向）和成像平面。和平行视图一样，也存在倾斜和非倾斜的透视图；其区别在于是否是基于图像中心的投影方向进行投影。</p><p>你也许已经学习过三点透视的艺术规范（一种手工构造透视图的方法）（图4.5）。关于透视图的一个令人惊讶的事实是，如果我们遵循透视图下的简单数学规则，那么透视图绘制的所有规则都将被自动遵循：物体直接被投射到眼睛，它们被绘制在眼前看到的视图平面上。</p><center style="font-size: 14px">图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。</center>
-</article><footer class=book-footer>
-<div class="flex flex-wrap justify-between">
-</div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
-</footer><div class=book-comments>
-</div><label for=menu-control class="hidden book-menu-overlay"></label>
-</div><aside class=book-toc>
-<div class=book-toc-content>
-<nav id=TableOfContents></nav></div></aside></main></body></html>
+<label for=toc-control><img src=/svg/toc.svg class=book-icon alt="Table of Contents"></label></div><aside class="hidden clearfix"><nav id=TableOfContents></nav></aside></header><article class=markdown><h1 id=42-透视投影>4.2 透视投影
+<a class=anchor href=#42-%e9%80%8f%e8%a7%86%e6%8a%95%e5%bd%b1>#</a></h1><p>Perspective</p><hr><p>对于如何在2D绘画或绘图上展示一个3D物体或场景的问题，艺术家们在计算机科学家开始之前已经有数百年的研究历史了。照片同样是使用2D图像展现3D厂家。虽然制作图像的非常规方法有很多，从立体主义绘画到鱼眼镜头（图4.2）再到外设照相机，但艺术、摄影以及计算机图形学的标准方法都是<em>线性透视</em>（linear perspective），将三维物体投射到图像平面上，使场景中的直线变成图像中的直线。</p><center style="font-size: 14px">图4.2 使用鱼眼镜头得到的图像并不是线性透视图像。图片由Philip Greenspun提供。</center><p>最简单的投影类型为平行投影，在这种类型的投影中，3D空间中的点沿着投影方向移动，直到与图像平面相交，从而映射成2D平面上的点（图4.3-4.4）。产生的视图由选择的投影方向和图像平面决定。如果图像平面与视图方向垂直，产生的投影叫做正交投影；否则叫做倾斜投影。</p><blockquote class="book-hint info">一些书籍对平行于坐标轴的投影方向仍在沿用“正投影”的名称。</blockquote><center style="font-size: 14px">图4.3 当投影线与图像平面平行和垂直时，产生的投影视图称为正交投影。</center>
+<center style="font-size: 14px">图4.4 与图像平面成某个角度的平行投影成为倾斜投影（右图）。在透视投影中，投影线全部穿过观察点，而非互相平行（左图）。图示中的透视图是非倾斜的，因为绘制出的穿过图像中心的投影线将垂直于图像平面。</center><p>平行投影常用于机械和建筑绘图，因为这种投影方式可以保持直线的平行，也可以保持平行于图像平面的平面对象的大小和形状。</p><p>平行投影的优点也是它的局限性。在我们的日常生活中，物体离得越远，看上去就越小，正因如此，延伸到远处的平行直线看上去并不平行。这是因为眼睛和照相机不会从一个单一的观察方向采集光线；它们采集通过一个特定观察点(viewpoint)的光线。正如文艺复兴以来艺术家们所认为的那样，我们可以通过透视投影生成自然视图(natural-looking views)：我们只是沿着穿过一个点（观察点）的直线投影，而不是沿着平行线投影（图4.4）。通过这种方式，离观察点更远的物体在投影时就会很自然地变得更小。一个透视图取决于选择的观察点（而不是投影方向）和成像平面。和平行视图一样，也存在倾斜和非倾斜的透视图；其区别在于是否是基于图像中心的投影方向进行投影。</p><p>你也许已经学习过三点透视的艺术规范（一种手工构造透视图的方法）（图4.5）。关于透视图的一个令人惊讶的事实是，如果我们遵循透视图下的简单数学规则，那么透视图绘制的所有规则都将被自动遵循：物体直接被投射到眼睛，它们被绘制在眼前看到的视图平面上。</p><center style="font-size: 14px">图4.5 在三点透视中，艺术家定义了平行线交会的消失点(vanishing points)。平行水平线将在水平线上相交于一点。每个平行线集合都有自己的消失点。如果我们实现的透视投影基于正确的几何原则，这些规则将被自动遵循。</center></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script></footer><div class=book-comments></div><label for=menu-control class="hidden book-menu-overlay"></label></div><aside class=book-toc><div class=book-toc-content><nav id=TableOfContents></nav></div></aside></main></body></html>

@@ -1,236 +1,41 @@
-<!doctype html><html lang=en-us dir=ltr>
-<head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="光线追踪 #  Ray Tracing
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="光线追踪 #  Ray Tracing
  本节的光线追踪方法属于 Whitted-Style 光线追踪。
  导论 #   光线追踪 vs 光栅化 #  光线追踪和光栅化是两种不同的成像方式。之所以需要光线追踪，是因为光栅化在处理全局效果方面表现不好，尤其是光线弹射超过一次的场景。全局效果(Global effects)包括软阴影(Soft shadows)，光面反射(Glossy reflection)，间接光照(Indirect illumination)。
 光栅化是一种很快的、但是很近似的渲染方法，因此图像质量较低。光栅化可以轻松做到实时渲染，实时渲染要求每秒超过30帧。
 光线追踪的步骤 #  光线追踪的主要步骤是计算光线和物体求交，而其中最重要的是计算光线和三角形求交。光线和三角形片元求交，可以分解为两步：
  光线和三角形片元所在平面求交； 判断交点是否在三角形片元内部。  光线追踪的代表算法 #   Möller Trumbore Algorithm：一种快速判定光线和三角形片元是否相交的算法。 Whitted-Style Ray Tracing：一种光线追踪的实现方式，此外还有路径追踪。   包围盒 #  Axis-Aligned Bounding Box
  Axis-Aligned Bounding Box (AABB) (轴对⻬包围盒)：一种加速光线追踪的技术，其理论是假设空间中存在这样一种包围盒，其三个面和坐标系平行，将几何体完全包裹进来，如果光线不会和包围盒相交，则一定不会和其内部的几何体相交。此方法通过减少不必要的对三角形片元与光线的相交计算，大幅加速光线追踪的计算时间。
-如何判断包围盒与光线是否相交？ #   光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。 对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。 对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。 从物理规律上看，必然 t~enter~ < t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。 如果 t~exit~ < 0，说明包围盒在光线的后面，他们不相交。 如果 t~exit~ >= 0 且 t~enter~ < 0，说明光源在包围盒内部，他们必然相交。 光线和包围盒有交点的充要条件是 t~enter~ < t~exit~ && t~exit~ >= 0。   AABB加速光线追踪的过程 #   两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。">
-<meta name=theme-color content="#FFFFFF">
-<meta name=color-scheme content="light dark"><meta property="og:title" content="光线追踪">
-<meta property="og:description" content="光线追踪 #  Ray Tracing
+如何判断包围盒与光线是否相交？ #   光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。 对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。 对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。 从物理规律上看，必然 t~enter~ < t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。 如果 t~exit~ < 0，说明包围盒在光线的后面，他们不相交。 如果 t~exit~ >= 0 且 t~enter~ < 0，说明光源在包围盒内部，他们必然相交。 光线和包围盒有交点的充要条件是 t~enter~ < t~exit~ && t~exit~ >= 0。   AABB加速光线追踪的过程 #   两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。"><meta name=theme-color content="#FFFFFF"><meta name=color-scheme content="light dark"><meta property="og:title" content="光线追踪"><meta property="og:description" content="光线追踪 #  Ray Tracing
  本节的光线追踪方法属于 Whitted-Style 光线追踪。
  导论 #   光线追踪 vs 光栅化 #  光线追踪和光栅化是两种不同的成像方式。之所以需要光线追踪，是因为光栅化在处理全局效果方面表现不好，尤其是光线弹射超过一次的场景。全局效果(Global effects)包括软阴影(Soft shadows)，光面反射(Glossy reflection)，间接光照(Indirect illumination)。
 光栅化是一种很快的、但是很近似的渲染方法，因此图像质量较低。光栅化可以轻松做到实时渲染，实时渲染要求每秒超过30帧。
 光线追踪的步骤 #  光线追踪的主要步骤是计算光线和物体求交，而其中最重要的是计算光线和三角形求交。光线和三角形片元求交，可以分解为两步：
  光线和三角形片元所在平面求交； 判断交点是否在三角形片元内部。  光线追踪的代表算法 #   Möller Trumbore Algorithm：一种快速判定光线和三角形片元是否相交的算法。 Whitted-Style Ray Tracing：一种光线追踪的实现方式，此外还有路径追踪。   包围盒 #  Axis-Aligned Bounding Box
  Axis-Aligned Bounding Box (AABB) (轴对⻬包围盒)：一种加速光线追踪的技术，其理论是假设空间中存在这样一种包围盒，其三个面和坐标系平行，将几何体完全包裹进来，如果光线不会和包围盒相交，则一定不会和其内部的几何体相交。此方法通过减少不必要的对三角形片元与光线的相交计算，大幅加速光线追踪的计算时间。
-如何判断包围盒与光线是否相交？ #   光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。 对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。 对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。 从物理规律上看，必然 t~enter~ < t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。 如果 t~exit~ < 0，说明包围盒在光线的后面，他们不相交。 如果 t~exit~ >= 0 且 t~enter~ < 0，说明光源在包围盒内部，他们必然相交。 光线和包围盒有交点的充要条件是 t~enter~ < t~exit~ && t~exit~ >= 0。   AABB加速光线追踪的过程 #   两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://sujingclg.github.io/docs/notes/games101/ray-tracing/"><meta property="article:section" content="docs">
-<title>光线追踪 | 计算机图形学基础</title><link rel=manifest href=/manifest.json>
-<link rel=icon href=/favicon.png type=image/x-icon>
-<link rel=stylesheet href=/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous>
-<script defer src=/flexsearch.min.js></script>
-<script defer src=/en.search.min.daf51c3339d52822e9a183641d2df7f7cf60b87707b81c2f5186a5a094c1546b.js integrity="sha256-2vUcMznVKCLpoYNkHS33989guHcHuBwvUYaloJTBVGs=" crossorigin=anonymous></script>
-</head><body dir=ltr>
-<input type=checkbox class="hidden toggle" id=menu-control>
-<input type=checkbox class="hidden toggle" id=toc-control>
-<main class="container flex">
-<aside class=book-menu>
-<div class=book-menu-content>
-<nav>
-<h2 class=book-brand>
-<a class="flex align-center" href=/><span>计算机图形学基础</span>
-</a>
-</h2><div class=book-search>
-<input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/>
-<div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul>
-<li>
-<input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
-<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between">
-<a href=/docs/chapter01/>第1章 引言</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter01/1-1/>1.1 图形学领域</a>
-</li><li>
-<a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a>
-</li></ul></li><li>
-<input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
-<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between">
-<a href=/docs/chapter02/>第2章 基本数学知识</a>
-</label>
-<ul>
-</ul></li><li>
-<input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
-<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between">
-<a href=/docs/chapter03/>第3章 光栅化图像</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter03/3-1/>3.1 光栅化设备</a>
-</li></ul></li><li>
-<input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
-<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between">
-<a href=/docs/chapter04/>第4章 光线追踪</a>
-</label>
-<ul>
-<li>
-<a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a>
-</li><li>
-<a href=/docs/chapter04/4-2/>4.2 透视投影</a>
-</li><li>
-<a href=/docs/chapter04/4-3/>4.3 视线的计算</a>
-</li><li>
-<a href=/docs/chapter04/4-4/>4.4 光线对象求交</a>
-</li></ul></li><li class=book-section-flat>
-<a href=/docs/example/>Example Site</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/>Table of Contents</a>
-<ul>
-<li>
-<a href=/docs/example/table-of-contents/with-toc/>With ToC</a>
-</li><li>
-<a href=/docs/example/table-of-contents/without-toc/>Without ToC</a>
-</li></ul></li><li>
-<input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
-<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between">
-<a role=button>Collapsed</a>
-</label>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/>3rd Level</a>
-<ul>
-<li>
-<a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a>
-</li></ul></li></ul></li></ul></li><li class=book-section-flat>
-<span>Notes</span>
-<ul>
-<li>
-<input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle checked>
-<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between">
-<a role=button>Games 101</a>
-</label>
-<ul>
-<li>
-<a href=/docs/notes/games101/rasterization/>光栅化</a>
-</li><li>
-<a href=/docs/notes/games101/shading/>着色</a>
-</li><li>
-<a href=/docs/notes/games101/ray-tracing/ class=active>光线追踪</a>
-</li><li>
-<a href=/docs/notes/games101/path-racing/>路径追踪</a>
-</li></ul></li><li>
-<input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
-<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between">
-<a role=button>Games 202</a>
-</label>
-<ul>
-</ul></li></ul></li><li class=book-section-flat>
-<span>Shortcodes</span>
-<ul>
-<li>
-<a href=/docs/shortcodes/buttons/>Buttons</a>
-</li><li>
-<a href=/docs/shortcodes/columns/>Columns</a>
-</li><li>
-<a href=/docs/shortcodes/details/>Details</a>
-</li><li>
-<a href=/docs/shortcodes/expand/>Expand</a>
-</li><li>
-<a href=/docs/shortcodes/hints/>Hints</a>
-</li><li>
-<a href=/docs/shortcodes/katex/>Katex</a>
-</li><li>
-<a href=/docs/shortcodes/mermaid/>Mermaid</a>
-</li><li>
-<input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
-<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between">
-<a href=/docs/shortcodes/section/>Section</a>
-</label>
-<ul>
-<li>
-<a href=/docs/shortcodes/section/first-page/>First Page</a>
-</li><li>
-<a href=/docs/shortcodes/section/second-page/>Second Page</a>
-</li></ul></li><li>
-<a href=/docs/shortcodes/tabs/>Tabs</a>
-</li></ul></li></ul><ul>
-<li>
-<a href=/posts/>
-Blog
-</a>
-</li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
-</div></aside><div class=book-page>
-<header class=book-header>
-<div class="flex align-center justify-between">
-<label for=menu-control>
-<img src=/svg/menu.svg class=book-icon alt=Menu>
-</label>
+如何判断包围盒与光线是否相交？ #   光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。 对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。 对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。 从物理规律上看，必然 t~enter~ < t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。 如果 t~exit~ < 0，说明包围盒在光线的后面，他们不相交。 如果 t~exit~ >= 0 且 t~enter~ < 0，说明光源在包围盒内部，他们必然相交。 光线和包围盒有交点的充要条件是 t~enter~ < t~exit~ && t~exit~ >= 0。   AABB加速光线追踪的过程 #   两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。"><meta property="og:type" content="article"><meta property="og:url" content="https://sujingclg.github.io/docs/notes/games101/ray-tracing/"><meta property="article:section" content="docs"><title>光线追踪 | 计算机图形学基础</title><link rel=manifest href=/manifest.json><link rel=icon href=/favicon.png type=image/x-icon><link rel=stylesheet href=/book.min.ab46de3e725a6415339a37bba23a0067534a37289b063c9f8d011515a63097a8.css integrity="sha256-q0bePnJaZBUzmje7ojoAZ1NKNyibBjyfjQEVFaYwl6g=" crossorigin=anonymous><script defer src=/flexsearch.min.js></script>
+<script defer src=/en.search.min.ba21324315b869c3638ea99918c07b1e84ec935ebd281e00189aec9bd6c24c47.js integrity="sha256-uiEyQxW4acNjjqmZGMB7HoTsk169KB4AGJrsm9bCTEc=" crossorigin=anonymous></script></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/><span>计算机图形学基础</span></a></h2><div class=book-search><input type=text id=book-search-input placeholder=Search aria-label=Search maxlength=64 data-hotkeys=s/><div class="book-search-spinner hidden"></div><ul id=book-search-results></ul></div><ul><li><input type=checkbox id=section-903d3e7635db560eef69c6ad03432b92 class=toggle>
+<label for=section-903d3e7635db560eef69c6ad03432b92 class="flex justify-between"><a href=/docs/chapter01/>第1章 引言</a></label><ul><li><a href=/docs/chapter01/1-1/>1.1 图形学领域</a></li><li><a href=/docs/chapter01/1-7/>1.7 设计和开发图形程序</a></li></ul></li><li><input type=checkbox id=section-144f7b511d4fbbff231a670ff00b5f9e class=toggle>
+<label for=section-144f7b511d4fbbff231a670ff00b5f9e class="flex justify-between"><a href=/docs/chapter02/>第2章 基本数学知识</a></label><ul></ul></li><li><input type=checkbox id=section-fca257306a653a028d58c47b763ab4c5 class=toggle>
+<label for=section-fca257306a653a028d58c47b763ab4c5 class="flex justify-between"><a href=/docs/chapter03/>第3章 光栅化图像</a></label><ul><li><a href=/docs/chapter03/3-1/>3.1 光栅化设备</a></li></ul></li><li><input type=checkbox id=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class=toggle>
+<label for=section-914c3bbb8c3fc1ae1705d7c0f585a4ae class="flex justify-between"><a href=/docs/chapter04/>第4章 光线追踪</a></label><ul><li><a href=/docs/chapter04/4-1/>4.1 基础光线追踪算法</a></li><li><a href=/docs/chapter04/4-2/>4.2 透视投影</a></li><li><a href=/docs/chapter04/4-3/>4.3 视线的计算</a></li><li><a href=/docs/chapter04/4-4/>4.4 光线对象求交</a></li></ul></li><li class=book-section-flat><a href=/docs/example/>Example Site</a><ul><li><a href=/docs/example/table-of-contents/>Table of Contents</a><ul><li><a href=/docs/example/table-of-contents/with-toc/>With ToC</a></li><li><a href=/docs/example/table-of-contents/without-toc/>Without ToC</a></li></ul></li><li><input type=checkbox id=section-4e46b01272d410b3a99461d79326ddf4 class=toggle>
+<label for=section-4e46b01272d410b3a99461d79326ddf4 class="flex justify-between"><a role=button>Collapsed</a></label><ul><li><a href=/docs/example/collapsed/3rd-level/>3rd Level</a><ul><li><a href=/docs/example/collapsed/3rd-level/4th-level/>4th Level</a></li></ul></li></ul></li></ul></li><li class=book-section-flat><span>Notes</span><ul><li><input type=checkbox id=section-09a42c31eb0974d53fdffb3236ecd72c class=toggle checked>
+<label for=section-09a42c31eb0974d53fdffb3236ecd72c class="flex justify-between"><a role=button>Games 101</a></label><ul><li><a href=/docs/notes/games101/rasterization/>光栅化</a></li><li><a href=/docs/notes/games101/shading/>着色</a></li><li><a href=/docs/notes/games101/ray-tracing/ class=active>光线追踪</a></li><li><a href=/docs/notes/games101/path-racing/>路径追踪</a></li></ul></li><li><input type=checkbox id=section-d29b041f99d42b202964e7d69335c343 class=toggle>
+<label for=section-d29b041f99d42b202964e7d69335c343 class="flex justify-between"><a role=button>Games 202</a></label><ul></ul></li></ul></li><li class=book-section-flat><span>Shortcodes</span><ul><li><a href=/docs/shortcodes/buttons/>Buttons</a></li><li><a href=/docs/shortcodes/columns/>Columns</a></li><li><a href=/docs/shortcodes/details/>Details</a></li><li><a href=/docs/shortcodes/expand/>Expand</a></li><li><a href=/docs/shortcodes/hints/>Hints</a></li><li><a href=/docs/shortcodes/katex/>Katex</a></li><li><a href=/docs/shortcodes/mermaid/>Mermaid</a></li><li><input type=checkbox id=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class=toggle>
+<label for=section-d3fc1bf6d66cd84b896a0af9f40cb1d5 class="flex justify-between"><a href=/docs/shortcodes/section/>Section</a></label><ul><li><a href=/docs/shortcodes/section/first-page/>First Page</a></li><li><a href=/docs/shortcodes/section/second-page/>Second Page</a></li></ul></li><li><a href=/docs/shortcodes/tabs/>Tabs</a></li></ul></li></ul><ul><li><a href=/posts/>Blog</a></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/svg/menu.svg class=book-icon alt=Menu></label>
 <strong>光线追踪</strong>
-<label for=toc-control>
-<img src=/svg/toc.svg class=book-icon alt="Table of Contents">
-</label>
-</div><aside class="hidden clearfix">
-<nav id=TableOfContents>
-<ul>
-<li><a href=#导论>导论</a>
-<ul>
-<li><a href=#光线追踪-vs-光栅化>光线追踪 vs 光栅化</a></li><li><a href=#光线追踪的步骤>光线追踪的步骤</a></li><li><a href=#光线追踪的代表算法>光线追踪的代表算法</a></li></ul></li><li><a href=#包围盒>包围盒</a>
-<ul>
-<li><a href=#如何判断包围盒与光线是否相交>如何判断包围盒与光线是否相交？</a></li></ul></li><li><a href=#aabb加速光线追踪的过程>AABB加速光线追踪的过程</a>
-<ul>
-<li><a href=#均匀的格子uniform-grids>均匀的格子(Uniform grids)：</a></li><li><a href=#空间划分spatial-partitions>空间划分(Spatial partitions)：</a></li><li><a href=#bvh>BVH</a></li><li><a href=#br><br></a></li></ul></li></ul></nav></aside></header><article class=markdown><h1 id=光线追踪>
-光线追踪
-<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa>#</a>
-</h1><p>Ray Tracing</p><hr>
-<p>本节的光线追踪方法属于 Whitted-Style 光线追踪。</p><br>
-<h2 id=导论>
-导论
-<a class=anchor href=#%e5%af%bc%e8%ae%ba>#</a>
-</h2><hr>
-<h3 id=光线追踪-vs-光栅化>
-光线追踪 vs 光栅化
-<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa-vs-%e5%85%89%e6%a0%85%e5%8c%96>#</a>
-</h3><p>光线追踪和光栅化是两种不同的成像方式。之所以需要光线追踪，是因为光栅化在处理全局效果方面表现不好，尤其是光线弹射超过一次的场景。全局效果(Global effects)包括软阴影(Soft shadows)，光面反射(Glossy reflection)，间接光照(Indirect illumination)。</p><p>光栅化是一种很快的、但是很近似的渲染方法，因此图像质量较低。光栅化可以轻松做到实时渲染，实时渲染要求每秒超过30帧。</p><h3 id=光线追踪的步骤>
-光线追踪的步骤
-<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e6%ad%a5%e9%aa%a4>#</a>
-</h3><p>光线追踪的主要步骤是计算光线和物体求交，而其中最重要的是计算光线和三角形求交。光线和三角形片元求交，可以分解为两步：</p><ul>
-<li>光线和三角形片元所在平面求交；</li><li>判断交点是否在三角形片元内部。</li></ul><h3 id=光线追踪的代表算法>
-光线追踪的代表算法
-<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e4%bb%a3%e8%a1%a8%e7%ae%97%e6%b3%95>#</a>
-</h3><ul>
-<li>Möller Trumbore Algorithm：一种快速判定光线和三角形片元是否相交的算法。</li><li>Whitted-Style Ray Tracing：一种光线追踪的实现方式，此外还有路径追踪。</li></ul><br>
-<h2 id=包围盒>
-包围盒
-<a class=anchor href=#%e5%8c%85%e5%9b%b4%e7%9b%92>#</a>
-</h2><p>Axis-Aligned Bounding Box</p><hr>
-<p>Axis-Aligned Bounding Box (AABB) (轴对⻬包围盒)：一种加速光线追踪的技术，其理论是假设空间中存在这样一种包围盒，其三个面和坐标系平行，将几何体完全包裹进来，如果光线不会和包围盒相交，则一定不会和其内部的几何体相交。此方法通过减少不必要的对三角形片元与光线的相交计算，大幅加速光线追踪的计算时间。</p><h3 id=如何判断包围盒与光线是否相交>
-如何判断包围盒与光线是否相交？
-<a class=anchor href=#%e5%a6%82%e4%bd%95%e5%88%a4%e6%96%ad%e5%8c%85%e5%9b%b4%e7%9b%92%e4%b8%8e%e5%85%89%e7%ba%bf%e6%98%af%e5%90%a6%e7%9b%b8%e4%ba%a4>#</a>
-</h3><ul>
-<li>光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。</li><li>对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。</li><li>对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。</li><li>从物理规律上看，必然 t~enter~ &lt; t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。</li><li>如果 t~exit~ &lt; 0，说明包围盒在光线的后面，他们不相交。</li><li>如果 t~exit~ >= 0 且 t~enter~ &lt; 0，说明光源在包围盒内部，他们必然相交。</li><li>光线和包围盒有交点的充要条件是 t~enter~ &lt; t~exit~ && t~exit~ >= 0。</li></ul><br>
-<h2 id=aabb加速光线追踪的过程>
-AABB加速光线追踪的过程
-<a class=anchor href=#aabb%e5%8a%a0%e9%80%9f%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e8%bf%87%e7%a8%8b>#</a>
-</h2><hr>
-<p>两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。</p><br>
-<h3 id=均匀的格子uniform-grids>
-均匀的格子(Uniform grids)：
-<a class=anchor href=#%e5%9d%87%e5%8c%80%e7%9a%84%e6%a0%bc%e5%ad%90uniform-grids>#</a>
-</h3><ol>
-<li>找到一个包围盒，其内部有多个物体</li><li>将这个包围盒划分成一堆格子(grid)</li><li>标记出和物体的表面相交的格子</li><li>计算光线追踪时快速通过没有被标记的格子，对于标记的格子，先判断是否和格子内的物体相交，如果不相交直接通过，否则计算光线和物体的交点（慢）。</li></ol><br>
-<h3 id=空间划分spatial-partitions>
-空间划分(Spatial partitions)：
-<a class=anchor href=#%e7%a9%ba%e9%97%b4%e5%88%92%e5%88%86spatial-partitions>#</a>
-</h3><p>在物体分布稀疏的地方用大的格子，反之用小的格子，格子大小不一致，其他同 Uniform grids。典型的空间划分算法是 KD-Tree 算法，它是一种基于空间二分切分的算法。KD-Tree 的缺点是很难判断网格和三角形片元是否有交集，以及一个物体有可能出现在多个网格中，因此会被存储多次。</p><p>另一种基于物体的划分(Object Partitions)是Bounding Volume Hierarchy (BVH)，它也是一种空间划分算法。由于避免了 KD-Tree 的那两个缺陷，成为了目前广泛使用的划分算法。</p><br>
-<h3 id=bvh>
-BVH
-<a class=anchor href=#bvh>#</a>
-</h3><h3 id=br>
-<br>
-<a class=anchor href=#br>#</a>
-</h3><p>BVH的步骤：</p><ul>
-<li>首先找到一个包围盒。</li><li>递归地把其内部的几何体(三角形片元)分为两个子部分，重新计算两个子部分的包围盒。</li><li>直到每个包围盒内部的三角形片元数量足够少时，停止递归。</li><li>将实际的Object记录在叶子节点里，其他部分做加速判断。</li></ul><br>
-<p>BVH的划分方法：</p><ul>
-<li>选择一个维度去划分 (类似于KD-Tree)。</li><li>总是选择节点中轴线最长的那个轴去划分。</li><li>对每个Object进行编号，取中间的那个编号的Object进行划分，可保证平衡划分。中间编号可以使用==快速选择算法==在O(n)时间找到。</li></ul><br>
-<p>BVH伪代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>Intersect(Ray ray, BVH node) {
+<label for=toc-control><img src=/svg/toc.svg class=book-icon alt="Table of Contents"></label></div><aside class="hidden clearfix"><nav id=TableOfContents><ul><li><a href=#导论>导论</a><ul><li><a href=#光线追踪-vs-光栅化>光线追踪 vs 光栅化</a></li><li><a href=#光线追踪的步骤>光线追踪的步骤</a></li><li><a href=#光线追踪的代表算法>光线追踪的代表算法</a></li></ul></li><li><a href=#包围盒>包围盒</a><ul><li><a href=#如何判断包围盒与光线是否相交>如何判断包围盒与光线是否相交？</a></li></ul></li><li><a href=#aabb加速光线追踪的过程>AABB加速光线追踪的过程</a><ul><li><a href=#均匀的格子uniform-grids>均匀的格子(Uniform grids)：</a></li><li><a href=#空间划分spatial-partitions>空间划分(Spatial partitions)：</a></li><li><a href=#bvh>BVH</a></li><li><a href=#br><br></a></li></ul></li></ul></nav></aside></header><article class=markdown><h1 id=光线追踪>光线追踪
+<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa>#</a></h1><p>Ray Tracing</p><hr><p>本节的光线追踪方法属于 Whitted-Style 光线追踪。</p><br><h2 id=导论>导论
+<a class=anchor href=#%e5%af%bc%e8%ae%ba>#</a></h2><hr><h3 id=光线追踪-vs-光栅化>光线追踪 vs 光栅化
+<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa-vs-%e5%85%89%e6%a0%85%e5%8c%96>#</a></h3><p>光线追踪和光栅化是两种不同的成像方式。之所以需要光线追踪，是因为光栅化在处理全局效果方面表现不好，尤其是光线弹射超过一次的场景。全局效果(Global effects)包括软阴影(Soft shadows)，光面反射(Glossy reflection)，间接光照(Indirect illumination)。</p><p>光栅化是一种很快的、但是很近似的渲染方法，因此图像质量较低。光栅化可以轻松做到实时渲染，实时渲染要求每秒超过30帧。</p><h3 id=光线追踪的步骤>光线追踪的步骤
+<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e6%ad%a5%e9%aa%a4>#</a></h3><p>光线追踪的主要步骤是计算光线和物体求交，而其中最重要的是计算光线和三角形求交。光线和三角形片元求交，可以分解为两步：</p><ul><li>光线和三角形片元所在平面求交；</li><li>判断交点是否在三角形片元内部。</li></ul><h3 id=光线追踪的代表算法>光线追踪的代表算法
+<a class=anchor href=#%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e4%bb%a3%e8%a1%a8%e7%ae%97%e6%b3%95>#</a></h3><ul><li>Möller Trumbore Algorithm：一种快速判定光线和三角形片元是否相交的算法。</li><li>Whitted-Style Ray Tracing：一种光线追踪的实现方式，此外还有路径追踪。</li></ul><br><h2 id=包围盒>包围盒
+<a class=anchor href=#%e5%8c%85%e5%9b%b4%e7%9b%92>#</a></h2><p>Axis-Aligned Bounding Box</p><hr><p>Axis-Aligned Bounding Box (AABB) (轴对⻬包围盒)：一种加速光线追踪的技术，其理论是假设空间中存在这样一种包围盒，其三个面和坐标系平行，将几何体完全包裹进来，如果光线不会和包围盒相交，则一定不会和其内部的几何体相交。此方法通过减少不必要的对三角形片元与光线的相交计算，大幅加速光线追踪的计算时间。</p><h3 id=如何判断包围盒与光线是否相交>如何判断包围盒与光线是否相交？
+<a class=anchor href=#%e5%a6%82%e4%bd%95%e5%88%a4%e6%96%ad%e5%8c%85%e5%9b%b4%e7%9b%92%e4%b8%8e%e5%85%89%e7%ba%bf%e6%98%af%e5%90%a6%e7%9b%b8%e4%ba%a4>#</a></h3><ul><li>光线只在进入包围盒所有的平面才算进入包围盒。光线只在离开任一包围盒的平面就算离开包围盒。</li><li>对每个平面对，计算 t~min~ 和 t~max~ ，可以为负值。</li><li>对包围盒而言，t~enter~ = max{t~min~}, t~exit~ = min{t~max~}。</li><li>从物理规律上看，必然 t~enter~ &lt; t~exit~ ，说明光线会在包围盒内部经过了一段时间，但他们不一定相交。</li><li>如果 t~exit~ &lt; 0，说明包围盒在光线的后面，他们不相交。</li><li>如果 t~exit~ >= 0 且 t~enter~ &lt; 0，说明光源在包围盒内部，他们必然相交。</li><li>光线和包围盒有交点的充要条件是 t~enter~ &lt; t~exit~ && t~exit~ >= 0。</li></ul><br><h2 id=aabb加速光线追踪的过程>AABB加速光线追踪的过程
+<a class=anchor href=#aabb%e5%8a%a0%e9%80%9f%e5%85%89%e7%ba%bf%e8%bf%bd%e8%b8%aa%e7%9a%84%e8%bf%87%e7%a8%8b>#</a></h2><hr><p>两个概念：均匀的格子(Uniform grids)，空间划分(Spatial partitions)。</p><br><h3 id=均匀的格子uniform-grids>均匀的格子(Uniform grids)：
+<a class=anchor href=#%e5%9d%87%e5%8c%80%e7%9a%84%e6%a0%bc%e5%ad%90uniform-grids>#</a></h3><ol><li>找到一个包围盒，其内部有多个物体</li><li>将这个包围盒划分成一堆格子(grid)</li><li>标记出和物体的表面相交的格子</li><li>计算光线追踪时快速通过没有被标记的格子，对于标记的格子，先判断是否和格子内的物体相交，如果不相交直接通过，否则计算光线和物体的交点（慢）。</li></ol><br><h3 id=空间划分spatial-partitions>空间划分(Spatial partitions)：
+<a class=anchor href=#%e7%a9%ba%e9%97%b4%e5%88%92%e5%88%86spatial-partitions>#</a></h3><p>在物体分布稀疏的地方用大的格子，反之用小的格子，格子大小不一致，其他同 Uniform grids。典型的空间划分算法是 KD-Tree 算法，它是一种基于空间二分切分的算法。KD-Tree 的缺点是很难判断网格和三角形片元是否有交集，以及一个物体有可能出现在多个网格中，因此会被存储多次。</p><p>另一种基于物体的划分(Object Partitions)是Bounding Volume Hierarchy (BVH)，它也是一种空间划分算法。由于避免了 KD-Tree 的那两个缺陷，成为了目前广泛使用的划分算法。</p><br><h3 id=bvh>BVH
+<a class=anchor href=#bvh>#</a></h3><h3 id=br><br><a class=anchor href=#br>#</a></h3><p>BVH的步骤：</p><ul><li>首先找到一个包围盒。</li><li>递归地把其内部的几何体(三角形片元)分为两个子部分，重新计算两个子部分的包围盒。</li><li>直到每个包围盒内部的三角形片元数量足够少时，停止递归。</li><li>将实际的Object记录在叶子节点里，其他部分做加速判断。</li></ul><br><p>BVH的划分方法：</p><ul><li>选择一个维度去划分 (类似于KD-Tree)。</li><li>总是选择节点中轴线最长的那个轴去划分。</li><li>对每个Object进行编号，取中间的那个编号的Object进行划分，可保证平衡划分。中间编号可以使用==快速选择算法==在O(n)时间找到。</li></ul><br><p>BVH伪代码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cpp data-lang=cpp><span style=display:flex><span>Intersect(Ray ray, BVH node) {
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ray misses node.bbox) <span style=color:#66d9ef>return</span>; <span style=color:#75715e>// 光线和BVH节点不相交，直接return
 </span></span></span><span style=display:flex><span><span style=color:#75715e></span>
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (node is a leaf node)  <span style=color:#75715e>// 叶子节点，光线和其内部所有物体求交，返回最先相交的
@@ -242,19 +47,4 @@ BVH
 </span></span><span style=display:flex><span>    hit2 <span style=color:#f92672>=</span> Intersect(ray, node.child2);
 </span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> the closer of hit1, hit2;
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div></article><footer class=book-footer>
-<div class="flex flex-wrap justify-between">
-</div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
-</footer><div class=book-comments>
-</div><label for=menu-control class="hidden book-menu-overlay"></label>
-</div><aside class=book-toc>
-<div class=book-toc-content>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#导论>导论</a>
-<ul>
-<li><a href=#光线追踪-vs-光栅化>光线追踪 vs 光栅化</a></li><li><a href=#光线追踪的步骤>光线追踪的步骤</a></li><li><a href=#光线追踪的代表算法>光线追踪的代表算法</a></li></ul></li><li><a href=#包围盒>包围盒</a>
-<ul>
-<li><a href=#如何判断包围盒与光线是否相交>如何判断包围盒与光线是否相交？</a></li></ul></li><li><a href=#aabb加速光线追踪的过程>AABB加速光线追踪的过程</a>
-<ul>
-<li><a href=#均匀的格子uniform-grids>均匀的格子(Uniform grids)：</a></li><li><a href=#空间划分spatial-partitions>空间划分(Spatial partitions)：</a></li><li><a href=#bvh>BVH</a></li><li><a href=#br><br></a></li></ul></li></ul></nav></div></aside></main></body></html>
+</span></span></code></pre></div></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(n){const e=window.getSelection(),t=document.createRange();t.selectNodeContents(n),e.removeAllRanges(),e.addRange(t)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script></footer><div class=book-comments></div><label for=menu-control class="hidden book-menu-overlay"></label></div><aside class=book-toc><div class=book-toc-content><nav id=TableOfContents><ul><li><a href=#导论>导论</a><ul><li><a href=#光线追踪-vs-光栅化>光线追踪 vs 光栅化</a></li><li><a href=#光线追踪的步骤>光线追踪的步骤</a></li><li><a href=#光线追踪的代表算法>光线追踪的代表算法</a></li></ul></li><li><a href=#包围盒>包围盒</a><ul><li><a href=#如何判断包围盒与光线是否相交>如何判断包围盒与光线是否相交？</a></li></ul></li><li><a href=#aabb加速光线追踪的过程>AABB加速光线追踪的过程</a><ul><li><a href=#均匀的格子uniform-grids>均匀的格子(Uniform grids)：</a></li><li><a href=#空间划分spatial-partitions>空间划分(Spatial partitions)：</a></li><li><a href=#bvh>BVH</a></li><li><a href=#br><br></a></li></ul></li></ul></nav></div></aside></main></body></html>

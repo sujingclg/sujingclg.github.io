@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>计算机图形学 on Notes</title><link>http://localhost/computer-graphics/</link><description>Recent content in 计算机图形学 on Notes</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Thu, 03 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost/computer-graphics/index.xml" rel="self" type="application/rss+xml"/><item><title>GAMES 101</title><link>http://localhost/computer-graphics/games101/</link><pubDate>Thu, 03 Feb 2022 00:00:00 +0000</pubDate><guid>http://localhost/computer-graphics/games101/</guid><description>之前的内容
+从长宽比和垂直方向的可视角度可以推算出水平方向的可视角度。此外也可推算出正交投影的远近、左右、上下信息。
+光栅化 (Rasterization) 离散化三角形 (Triangles) What is a screen?
+An array of pixels Size of the array: resolution A typical kind of raster display Raster == screen in German（屏幕的德语词汇）
+Rasterize == drawing onto the screen Pixel (FYI, short for “picture element”)
+For now: A pixel is a little square with uniform color Color is a mixture of (red, green, blue) 光栅化步骤 从变换空间[-1,1]^3^映射到到屏幕空间。首先忽略 z 方向，使用视口变换将 xy 空间映射到屏幕。
+视口变换：把[-1,1]^2^变换为[0,width] x [0,height]的屏幕空间。视口变换矩(Viewport transform matrix)阵如下，除以 2 是因为原空间的宽高都是 2，最后一列是平移变换，将原点定义到屏幕中心(否则中心在屏幕左下角)。</description></item><item><title>GAMES 202</title><link>http://localhost/computer-graphics/games202/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://localhost/computer-graphics/games202/</guid><description>实时渲染：对离线渲染的科学知识的简化和变得更快的方法，以及相关的系统工程。
+实时渲染进化史 Interactive 3D graphics pipeline as in OpenGL
+Earliest SGI machines (Clark 82) to today Most of focus on more geometry, texture mapping Some tweaks for realism (shadow mapping, accum. buffer) 20 years ago
+Interactive 3D geometry with simple texture mapping, fake shadows(OpenGL, DirectX) 20 -&amp;gt; 10 years ago
+A giant leap since the emergence of programmable shaders(2000) ==可编程渲染管线被发布出来== Complex environment lighting, real materials (velvet, satin, paints), soft shadows Today</description></item></channel></rss>

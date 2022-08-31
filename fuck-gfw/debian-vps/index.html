@@ -1,4 +1,4 @@
-<!doctype html><html lang=en class=color-toggle-hidden><head><meta charset=utf-8><meta name=referrer content="no-referrer"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=generator content="Hugo 0.101.0"><meta name=description content="XRay 官方脚本安装的文件 模板编辑配置文件 Xray 教程 V2rayN 4.12 配置教程 将语言更改成英语 首先输入下列语句，打开 locale 文件。
+<!doctype html><html lang=en class=color-toggle-hidden><head><meta charset=utf-8><meta name=referrer content="no-referrer"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=generator content="Hugo 0.102.1"><meta name=description content="XRay 官方脚本安装的文件 模板编辑配置文件 Xray 教程 V2rayN 4.12 配置教程 将语言更改成英语 首先输入下列语句，打开 locale 文件。
 sudo vim /etc/default/locale 显示如下
 LANG=&#34;zh_CN.UTF-8&#34; LANGUAGE=&#34;zh_CN:zh&#34; 将其内容更改成如下内容，然后重启。
 LANG=&#34;en_US.UTF-8&#34; LANGUAGE=&#34;en_US:en&#34; 配置 sudo apt install sudo chmod 777 /etc/sudoers # 将sudoers修改为可编辑权限 vim /etc/sudoers 在root ALL=(ALL:ALL) ALL下添加user ALL=(ALL) ALL
@@ -27,7 +27,10 @@ Docker 配置国内源 创建/etc/docker/daemon.json文件，写入如下内容�
 <label><span class=flex><a href=/fuck-gfw/soft-routeros class=gdoc-nav__entry>软路由系统</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/fuck-gfw/debian-vps class="gdoc-nav__entry is-active">Debian VPS 配置</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/fuck-gfw/lvm class=gdoc-nav__entry>Linux LVM 详解</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
-<label><span class=flex><a href=/computer-graphics class=gdoc-nav__entry>计算机图形学</a></span></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
+<label><span class=flex><svg class="gdoc-icon gdoc_search"><use xlink:href="#gdoc_search"/></svg><a href=/database class=gdoc-nav__entry>数据库</a></span></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/database/sql class=gdoc-nav__entry>SQL教程</a></span></label></li><li><input type=checkbox class=hidden>
+<label><span class=flex><a href=/database/injection-attack class=gdoc-nav__entry>注入攻击</a></span></label></li></ul></li><li><input type=checkbox class=hidden>
+<label><span class=flex><svg class="gdoc-icon gdoc_fire"><use xlink:href="#gdoc_fire"/></svg><a href=/computer-graphics class=gdoc-nav__entry>计算机图形学</a></span></label><ul class=gdoc-nav__list><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/computer-graphics/games101 class=gdoc-nav__entry>GAMES 101</a></span></label></li><li><input type=checkbox class=hidden>
 <label><span class=flex><a href=/computer-graphics/games202 class=gdoc-nav__entry>GAMES 202</a></span></label></li></ul></li></ul></section><section class=gdoc-nav--more></section></nav></aside><div class=gdoc-page><div class="gdoc-page__header flex flex-wrap
 justify-between
